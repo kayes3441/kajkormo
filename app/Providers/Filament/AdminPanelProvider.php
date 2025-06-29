@@ -29,25 +29,25 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-
         return $panel
             ->default()
             ->id('admin')
             ->authGuard('admin')
+            ->default()
             ->path('admin')
             ->login(Login::class)
-//            ->brandLogo(
-//                getImageOrPlaceholder(
-//                    path: getConfigurationData('web_header_logo'),
-//                    storageType: 'storage',
-//                    type: 'placeholder-basic'
-//                )
-//            )
-//            ->brandLogoHeight('50px')
-//            ->colors([
-//                'primary' => getConfigurationData('panel_primary_color') ?? Color::Amber,
-//            ])
-//            ->favicon(getImageOrPlaceholder(path: getConfigurationData('web_fav_icon'),storageType: 'storage',type: 'placeholder-basic'))
+            ->brandLogo(
+                getImageOrPlaceholder(
+                    path: getConfigurationData('web_header_logo'),
+                    storageType: 'storage',
+                    type: 'placeholder-basic'
+                )
+            )
+            ->brandLogoHeight('50px')
+            ->colors([
+                'primary' => getConfigurationData('panel_primary_color') ?? Color::Amber,
+            ])
+            ->favicon(getImageOrPlaceholder(path: getConfigurationData('web_fav_icon'),storageType: 'storage',type: 'placeholder-basic'))
             ->registration(false)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
