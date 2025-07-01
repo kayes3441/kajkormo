@@ -33,17 +33,9 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->authGuard('admin')
-            ->default()
             ->path('admin')
             ->login(Login::class)
-            ->brandLogo(
-                getImageOrPlaceholder(
-                    path: getConfigurationData('web_header_logo'),
-                    storageType: 'storage',
-                    type: 'placeholder-basic'
-                )
-            )
-            ->brandLogoHeight('50px')
+            ->brandLogo(getImageOrPlaceholder(path: getConfigurationData('web_header_logo'),storageType: 'storage',type: 'placeholder-basic'))
             ->colors([
                 'primary' => getConfigurationData('panel_primary_color') ?? Color::Amber,
             ])
@@ -66,6 +58,7 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->breadcrumbs(false)
             ->middleware([
+
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,

@@ -10,9 +10,7 @@ trait AdminPermissionTrait
 {
     protected function getAccessPermission($request):bool
     {
-
         $user = auth('admin')->user();
-
         if (!$user) {
             return false;
         }

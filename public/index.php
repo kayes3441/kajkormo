@@ -1,8 +1,13 @@
 <?php
+
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 
+
 define('LARAVEL_START', microtime(true));
+/*
+ * define root path
+ */
 const DOMAIN_POINTED_DIRECTORY = 'public';
 
 // Determine if the application is in maintenance mode...
