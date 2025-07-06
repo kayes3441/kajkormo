@@ -16,11 +16,15 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->index();
             $table->tinyInteger('position')->nullable();
-            $table->tinyInteger('parent_id')->index();
+            $table->foreignUuid('parent_id')->nullable()->index()->comment('0=>category,1=>subcategory,2=>sub-subcategory');
             $table->string('icon')->nullable();
-            $table->tinyInteger('status')->default(0);
+            $table->boolean('status')->default(false);
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('parent_id')
+                ->references('id')
+                ->on('categories')
+                ->nullOnDelete();
         });
     }
 
