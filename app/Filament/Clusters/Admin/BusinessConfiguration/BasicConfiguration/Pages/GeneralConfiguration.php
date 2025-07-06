@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Filament\Clusters\Admin\BusinessConfiguration\GeneralConfiguration\Pages;
+namespace App\Filament\Clusters\Admin\BusinessConfiguration\BasicConfiguration\Pages;
 
-use App\Filament\Clusters\Admin\BusinessConfiguration\GeneralConfiguration\BasicConfiguration;
+use App\Filament\Clusters\Admin\BusinessConfiguration\BasicConfiguration\BasicConfiguration;
 use App\Models\Setting;
+use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
@@ -13,7 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Forms\Components\Actions\Action as FormAction;
+
 /**
  * @property mixed $form
  */

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Clusters\Admin\BusinessConfiguration\GeneralConfiguration\Pages;
+namespace App\Filament\Clusters\Admin\BusinessConfiguration\BasicConfiguration\Pages;
 
-use App\Filament\Clusters\Admin\BusinessConfiguration\GeneralConfiguration\BasicConfiguration;
+use App\Filament\Clusters\Admin\BusinessConfiguration\BasicConfiguration\BasicConfiguration;
 use App\Models\Setting;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Clusters\Admin\BusinessConfiguration\GeneralConfiguration;
+namespace App\Filament\Clusters\Admin\BusinessConfiguration\BasicConfiguration;
 
 use Filament\Clusters\Cluster;
 
