@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('admins', function (Blueprint $table) {
-            $table->uuid('id')->primary(); // UUID primary key
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('phone')->nullable()->index();
             $table->foreignUuid('admin_role_id')->nullable();

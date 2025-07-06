@@ -20,6 +20,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Livewire\Livewire;
 use function App\Utils\getConfigurationData;
@@ -29,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        if (Schema::hasTable('settings')):
         return $panel
             ->default()
             ->id('admin')
@@ -73,6 +75,9 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+        else:
+            return $panel->default()->id('admin');
+        endif;
     }
     public function boot():void
     {
