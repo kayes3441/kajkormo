@@ -17,11 +17,17 @@ return new class extends Migration
             $table->string('last_name')->nullable();
             $table->string('phone');
             $table->string('email')->nullable();
-            $table->enum('gender', ['male', 'female' ,'others'])->nullable();
+            $table->enum('gender', ['male', 'female' ,'other'])->nullable();
             $table->date('date_of_birth')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('phone_verified_at')->nullable();
             $table->string('password');
+            $table->uuid('temporary_token')->nullable();
             $table->char('device_token',80)->nullable();
+            $table->tinyInteger('login_attempts')->default(0);
+            $table->tinyInteger('login_max_attempts')->default(10);
+            $table->string('app_language')->default('en');
+            $table->tinyInteger('status')->default(0);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
@@ -34,8 +40,13 @@ return new class extends Migration
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
+            $table->uuid('id')->primary();
+            $table->foreignUuid(' user_id')->index();
             $table->string('token');
+            $table->string('channel', 20)->comment('sms,email');
+            $table->tinyInteger('attempts')->default(0);
+            $table->tinyInteger('max_attempts')->default(5);
+            $table->timestamp('expires_at')->nullable();
             $table->timestamp('created_at')->nullable();
         });
 

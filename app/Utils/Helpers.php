@@ -31,5 +31,12 @@ class Helpers
         }
         return $lang;
     }
-
+    public static function validationErrorProcessor($validator): array
+    {
+        $errorKeeper = [];
+        foreach ($validator->errors()->getMessages() as $index => $error) {
+            $errorKeeper[] = ['code' => $index, 'message' => $error[0]];
+        }
+        return $errorKeeper;
+    }
 }
