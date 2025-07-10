@@ -30,7 +30,6 @@ class Location extends Model
     protected static function booted(): void
     {
         static::creating(function ($model) {
-            $model->uuid = Str::uuid()->toString();
             $model->slug = Str::slug($model->name . '-' . $model->level);
         });
 
