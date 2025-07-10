@@ -7,8 +7,12 @@ use App\Filament\Resources\Admin\LocationResource\Pages\EditLocation;
 use App\Filament\Resources\Admin\LocationResource\Pages\ListLocations;
 use App\Filament\Resources\Admin\LocationResource\RelationManagers\ChildrenRelationManager;
 use App\Models\Location;
-use Filament\Forms\{Components\Select, Components\TextInput, Get, Form};
-use Filament\Tables\{Columns\TextColumn, Filters\SelectFilter, Table};
+use Filament\Forms\{Components\Grid, Components\Section, Components\Select, Components\TextInput, Get, Form};
+use Filament\Tables\{Actions\DeleteAction,
+    Actions\DeleteBulkAction,
+    Actions\EditAction,
+    Columns\TextColumn,
+    Table};
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -21,7 +25,11 @@ class LocationResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form->schema([
+        return $form
+            ->schema([
+                Section::make()
+                    ->schema([
+                    Grid::make(2)->schema([
             TextInput::make('name')
                 ->required()
                 ->maxLength(100),
@@ -37,7 +45,7 @@ class LocationResource extends Resource
                 ->required(),
 
             Select::make('parent_id')
-                ->label('Parent')
+                ->label('Parent Location')
                 ->relationship(
                     name: 'parent',
                     titleAttribute: 'name',
@@ -63,7 +71,10 @@ class LocationResource extends Resource
                 ->step(0.0000001)
                 ->maxValue(180)
                 ->minValue(-180),
-        ]);
+                    ])
+                ])
+            ]);
+
     }
 
     public static function table(Table $table): Table
@@ -85,17 +96,14 @@ class LocationResource extends Resource
                     }),
 
                 TextColumn::make('parent.name')
-                    ->label('Parent')
-                    ->toggleable(),
+                    ->label('Parent Location')
             ])
-            ->filters([
-                SelectFilter::make('level')
-                    ->options([
-                        'division'     => 'Division',
-                        'metropolitan' => 'Metropolitan',
-                        'district'     => 'District',
-                        'sub_district'  => 'Sub‑district',
-                    ]),
+            ->actions([
+                EditAction::make(),
+                DeleteAction::make(),
+            ])
+            ->bulkActions([
+                DeleteBulkAction::make(),
             ])
             ->defaultSort('level');
     }
