@@ -11,11 +11,12 @@ class Location extends Model
     protected $fillable = [
         'name',
         'slug',
-        'uuid',
         'level',
+        'country_code',
         'latitude',
         'longitude',
         'parent_id',
+        'status',
     ];
     public function parent(): BelongsTo
     {

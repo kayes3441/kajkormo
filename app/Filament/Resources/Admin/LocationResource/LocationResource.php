@@ -6,20 +6,23 @@ use App\Filament\Resources\Admin\LocationResource\Pages\CreateLocation;
 use App\Filament\Resources\Admin\LocationResource\Pages\EditLocation;
 use App\Filament\Resources\Admin\LocationResource\Pages\ListLocations;
 use App\Filament\Resources\Admin\LocationResource\RelationManagers\ChildrenRelationManager;
+use App\Models\Country;
 use App\Models\Location;
 use Filament\Forms\{Components\Grid, Components\Section, Components\Select, Components\TextInput, Get, Form};
-use Filament\Tables\{Actions\DeleteAction,
+use Filament\Tables\{Actions\Action,
+    Actions\DeleteAction,
     Actions\DeleteBulkAction,
     Actions\EditAction,
     Columns\TextColumn,
     Table};
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 
 class LocationResource extends Resource
 {
     protected static ?string $model            = Location::class;
-    protected static ?string $navigationIcon   = 'heroicon-o-map';
+    protected static ?string $navigationIcon   = 'heroicon-s-map-pin';
     protected static ?string $navigationGroup  = 'Administrative Areas';
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -33,14 +36,25 @@ class LocationResource extends Resource
             TextInput::make('name')
                 ->required()
                 ->maxLength(100),
+            Select::make('country_code')
+                ->label('Country')
+                ->options(fn () => Country::query()
+                    ->where('is_active', true)
+                    ->pluck('name', 'iso2'))
+                ->searchable()
+                ->required()
+                ->reactive(),
 
             Select::make('level')
-                ->options([
-                    'division'     => 'Division',
-                    'metropolitan' => 'Metropolitan',
-                    'district'     => 'District',
-                    'sub_district'  => 'Sub‑district',
-                ])
+                ->label('Level')
+                ->options(function (Get $get) {
+                    $code = $get('country_code');
+                    if (!$code) return [];
+                    $labels = Country::where('iso2', $code)->value('location_labels');
+                    return collect(json_decode($labels, true) ?? [])
+                        ->mapWithKeys(fn($item) => [$item => ucfirst(str_replace('_', ' ', $item))])
+                        ->toArray();
+                })
                 ->live()
                 ->required(),
 
@@ -49,16 +63,27 @@ class LocationResource extends Resource
                 ->relationship(
                     name: 'parent',
                     titleAttribute: 'name',
-                    modifyQueryUsing: fn (Builder $query, Get $get) => match ($get('level')) {
-                        'metropolitan' => $query->where('level', 'division'),
-                        'district'     => $query->whereIn('level', ['division', 'metropolitan']),
-                        'sub_district'  => $query->where('level', 'district'),
-                        default        => $query->whereNull('parent_id'),
-                    },
+                    modifyQueryUsing: function (Builder $query, Get $get) {
+                        $level = $get('level');
+                        $country = $get('country_code');
+
+                        if (!$level || !$country) {
+                            return $query->whereNull('id');
+                        }
+                        $query->where('country_code', $country);
+
+                        return match ($level) {
+                            'metropolitan'   => $query->where('level', 'division'),
+                            'district'       => $query->whereIn('level', ['division', 'metropolitan']),
+                            'sub_district'   => $query->where('level', 'district'),
+                            default          => $query->whereNull('id'),
+                        };
+                    }
                 )
                 ->visible(fn (Get $get) => $get('level') !== 'division')
                 ->required(fn (Get $get) => $get('level') !== 'division')
-                ->searchable(),
+                ->searchable()
+                ->reactive(),
 
             TextInput::make('latitude')
                 ->numeric()
@@ -87,7 +112,7 @@ class LocationResource extends Resource
 
                 TextColumn::make('level')
                     ->badge()
-                    ->formatStateUsing(fn (string $state) => ucfirst($state))
+                    ->formatStateUsing(fn (string $state) => ucfirst(str_replace('_','-',$state)))
                     ->color(fn (string $state) => match ($state) {
                         'division'     => 'success',
                         'metropolitan' => 'info',
@@ -99,8 +124,24 @@ class LocationResource extends Resource
                     ->label('Parent Location')
             ])
             ->actions([
+                Action::make('toggleStatus')
+                    ->label(fn ($record) => $record->status === 'active' ? 'Disable' : 'Enable')
+                    ->icon(fn ($record) => $record->status === 'active' ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
+                    ->color(fn ($record) => $record->status === 'active' ? 'danger' : 'success')
+                    ->action(fn ($record) => $record->update([
+                        'status' => $record->status === 'active' ? 'inactive' : 'active',
+                    ]))
+                    ->after(function ($record) {
+                        Notification::make()
+                            ->title('Status updated successfully!')
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->visible(fn ($record) => !is_null($record->status)),
                 EditAction::make(),
                 DeleteAction::make(),
+
             ])
             ->bulkActions([
                 DeleteBulkAction::make(),

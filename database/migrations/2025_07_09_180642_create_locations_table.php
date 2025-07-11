@@ -14,14 +14,15 @@ return new class extends Migration
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('country_code',8);
             $table->string('slug')->unique();
-            $table->enum('level', ['division', 'metropolitan', 'district', 'sub_district']);
+            $table->string('level');
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
             $table->foreignId('parent_id')->nullable()->constrained('locations')->cascadeOnDelete();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
-            $table->index(['parent_id', 'slug']);
+            $table->index(['parent_id', 'slug','status']);
         });
     }
 
