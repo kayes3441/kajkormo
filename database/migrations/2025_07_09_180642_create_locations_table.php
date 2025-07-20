@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
             $table->foreignId('parent_id')->nullable()->constrained('locations')->cascadeOnDelete();
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->boolean('status')->default(1);
             $table->timestamps();
             $table->index(['parent_id', 'slug','status']);
         });

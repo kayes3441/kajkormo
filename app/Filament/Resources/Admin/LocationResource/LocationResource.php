@@ -125,11 +125,11 @@ class LocationResource extends Resource
             ])
             ->actions([
                 Action::make('toggleStatus')
-                    ->label(fn ($record) => $record->status === 'active' ? 'Disable' : 'Enable')
-                    ->icon(fn ($record) => $record->status === 'active' ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
-                    ->color(fn ($record) => $record->status === 'active' ? 'danger' : 'success')
+                    ->label(fn ($record) => $record->status === 1 ? 'Disable' : 'Enable')
+                    ->icon(fn ($record) => $record->status === 1 ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
+                    ->color(fn ($record) => $record->status === 1 ? 'danger' : 'success')
                     ->action(fn ($record) => $record->update([
-                        'status' => $record->status === 'active' ? 'inactive' : 'active',
+                        'status' => $record->status === 1 ? 0 : 1,
                     ]))
                     ->after(function ($record) {
                         Notification::make()

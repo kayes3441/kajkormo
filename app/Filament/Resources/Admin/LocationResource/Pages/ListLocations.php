@@ -20,9 +20,9 @@ class ListLocations extends ListRecords
     public function getTabs(): array
     {
         return [
-            'All' => Tab::make()
-                ->icon('heroicon-o-bars-3')
-                ->badge(Location::count()),
+//            'All' => Tab::make()
+//                ->icon('heroicon-o-bars-3')
+//                ->badge(Location::count()),
 
             'Division' => Tab::make()
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('level', 'division'))
