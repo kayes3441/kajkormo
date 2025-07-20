@@ -90,6 +90,11 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('icon')
+                    ->label('Icon')
+                    ->height(40)
+                    ->width(40)
+                    ->circular(),
                 TextColumn::make('name')->sortable()->searchable(),
 
                 TextColumn::make('level')
@@ -104,11 +109,7 @@ class CategoryResource extends Resource
 
                 TextColumn::make('parent.name')->label('Parent')->sortable(),
 
-                ImageColumn::make('icon')
-                    ->label('Icon')
-                    ->height(40)
-                    ->width(40)
-                    ->circular(),
+
             ])
             ->actions([
                 Action::make('toggleStatus')
