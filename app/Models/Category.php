@@ -14,7 +14,7 @@ class Category extends Model
 
     public $incrementing = false;
     protected $keyType = 'string';
-    protected $fillable = ['name', 'slug', 'position', 'parent_id', 'icon', 'status'];
+    protected $fillable = ['name', 'slug', 'level', 'parent_id','priority','icon', 'status'];
 
     protected static function boot():void
     {

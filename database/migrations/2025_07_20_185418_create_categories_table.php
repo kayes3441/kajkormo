@@ -15,9 +15,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('slug')->index();
-            $table->tinyInteger('position')->nullable();
-            $table->foreignUuid('parent_id')->nullable()->index()->comment('0=>category,1=>subcategory,2=>sub-subcategory');
+            $table->enum('level',['category','subcategory','sub-subcategory']);
+            $table->foreignUuid('parent_id')->nullable();
             $table->string('icon')->nullable();
+            $table->integer('priority')->nullable();
             $table->boolean('status')->default(false);
             $table->timestamps();
             $table->softDeletes();
