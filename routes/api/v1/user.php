@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\API\v1\auth\PassportAuthController;
-use App\Http\Controllers\API\v1\auth\UserAPIAuthController;
+use App\Http\Controllers\API\v1\Auth\PassportAuthController;
+use App\Http\Controllers\API\v1\Auth\UserAPIAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

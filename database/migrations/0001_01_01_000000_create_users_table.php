@@ -27,6 +27,8 @@ return new class extends Migration
             $table->tinyInteger('login_attempts')->default(0);
             $table->tinyInteger('login_max_attempts')->default(10);
             $table->string('app_language')->default('en');
+            $table->foreignId('location_id')->nullable();
+            $table->text('address')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->rememberToken();
             $table->timestamps();

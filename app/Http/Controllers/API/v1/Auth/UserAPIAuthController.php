@@ -1,22 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\API\v1\auth;
+namespace App\Http\Controllers\API\v1\Auth;
 
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Utils\Helpers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class UserAPIAuthController extends Controller
 {
     public function __construct(
-
     )
     {
     }
