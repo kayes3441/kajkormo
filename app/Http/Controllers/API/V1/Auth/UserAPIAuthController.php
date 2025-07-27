@@ -118,7 +118,7 @@ class UserAPIAuthController extends Controller
             'token_type'   => 'Bearer',
         ]);
     }
-    
+
     protected function OTPGenerate($clientID):int
     {
         OtpVerificationCode::where('client_id', $clientID)->delete();
@@ -130,6 +130,15 @@ class UserAPIAuthController extends Controller
             'code' =>$code,
         ]);
         return $code;
+    }
+
+    public function logout(Request $request):JsonResponse
+    {
+        if (auth()->check()) {
+            auth()->user()->currentAccessToken()->revoke();
+            return response()->json(['message' => 'Logged Out Successfully'], 200);
+        }
+        return response()->json(['message' => 'Logged Out Fail'], 403);
     }
 
 }

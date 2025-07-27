@@ -8,6 +8,7 @@ use Filament\Actions\CreateAction;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
+
 class ListLocations extends ListRecords
 {
     protected static string $resource = LocationResource::class;
