@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('code');
             $table->tinyInteger('attempts')->default(0);
             $table->tinyInteger('max_attempts')->default(5);
-            $table->timestamp('expires_at');
+            $table->timestamp('expires_at')->nullable();
             $table->timestamp('verified_at')->nullable();
             $table->timestamps();
         });
