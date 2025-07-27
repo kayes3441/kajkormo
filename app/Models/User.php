@@ -20,9 +20,14 @@ class User extends UserAuth
     public $incrementing = false;
     protected $keyType = 'string';
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
+        'gender',
+        'temporary_token',
+        'phone',
         'password',
+        'phone_verified_at',
     ];
 
     /**

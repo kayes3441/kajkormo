@@ -12,18 +12,18 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
 
-Route::group(['namespace' => 'api\v1', 'prefix' => 'V1', 'middleware' => ['api_lang']], function () {
-    Route::group(['prefix' => 'auth', 'namespace' => 'auth'], function () {
+Route::group([  'prefix' => 'v1'], function () {
+    Route::group(['prefix' => 'auth',], function () {
         Route::controller( UserAPIAuthController::class)->group(function () {
-            Route::post('register', 'register');
-            Route::post('login', 'login');
+            Route::post('registration', 'registration');
+            Route::get('otp-verify', 'verifyOTP');
+            Route::get('login', 'login');
             Route::get('logout', 'logout')->middleware('auth:api');
         });
     });
     Route::prefix('location')
-        ->namespace('location')
         ->controller(LocationController::class)->group(function () {
-            Route::post('list/{params}', 'list');
+            Route::get('list', 'getList');
 
     });
 });

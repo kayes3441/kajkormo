@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\v1\Auth;
+namespace App\Http\Controllers\API\V1\Auth;
 
 
 use App\Http\Controllers\Controller;
@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use function Laravel\Prompts\error;
+use Illuminate\Support\Facades\Validator;
 
 class UserAPIAuthController extends Controller
 {
@@ -22,20 +22,26 @@ class UserAPIAuthController extends Controller
 
     public function registration(Request $request): JsonResponse
     {
-        $request->validate([
-            'f_name'        => 'required|string|max:50',
-            'l_name'        => 'required|string|max:50',
+        $validator = Validator::make($request->all(),[
+            'first_name'        => 'required|string|max:50',
+            'last_name'        => 'required|string|max:50',
             'email'         => 'email|unique:users',
             'phone'         => 'required|unique:users',
             'gender'        => 'required|in:male,female,other',
-            'password'      => 'required|min:8|confirmed_password',
-            'location'      =>'required|array',
+            'password'       => 'required|min:8|confirmed',
+            'location'      =>'required',
         ]);
-
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
         $temporaryToken = Str::uuid()->toString();
         $user = User::create([
-            'f_name'         => $request['f_name'],
-            'l_name'         => $request['l_name'],
+            'first_name'         => $request['first_name'],
+            'last_name'         => $request['last_name'],
             'email'          => $request['email'],
             'phone'          => $request['phone'],
             'gender'         => $request['gender'],
@@ -56,7 +62,7 @@ class UserAPIAuthController extends Controller
         ], 201);
     }
 
-    public function verifyPhone(Request $request): JsonResponse
+    public function verifyOTP(Request $request): JsonResponse
     {
         $request->validate([
             'temporary_token' => 'required|uuid',
@@ -71,7 +77,8 @@ class UserAPIAuthController extends Controller
             'phone_verified_at' => now(),
             'temporary_token'   => null,
         ])->save();
-        $accessToken = $user->createToken('apiToken')->accessToken;
+        $tokenResult = $user->createToken('apiToken');
+        $accessToken = $tokenResult->plainTextToken;
         return response()->json([
             'access_token' => $accessToken,
             'token_type'   => 'Bearer',
@@ -108,6 +115,10 @@ class UserAPIAuthController extends Controller
         }
         if (is_null($user->phone_verified_at)) {
             $temporaryToken = Str::uuid()->toString();
+            $user->forceFill([
+                'phone_verified_at' => null,
+                'temporary_token'   => $temporaryToken,
+            ])->save();
             $code = $this->OTPGenerate(clientID: $user['id']);
             return response()->json(['message' => 'Phone not verified', 'temporary_token' => $temporaryToken,'code' => $code,], 403);
         }
