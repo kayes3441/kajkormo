@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserLocation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -25,8 +26,8 @@ class UserAPIAuthController extends Controller
             'email'         => 'email|unique:users',
             'phone'         => 'required|unique:users',
             'gender'        => 'required|in:male,female,other',
-            'date_of_birth' => 'required|date',
             'password'      => 'required|min:8|confirmed_password',
+            'location'      =>'required|array',
         ]);
 
         $temporaryToken = Str::uuid()->toString();
@@ -37,10 +38,16 @@ class UserAPIAuthController extends Controller
             'email'          => $request['email'],
             'phone'          => $request['phone'],
             'gender'         => $request['gender'],
-            'date_of_birth'  => $request['date_of_birth'],
             'password'       => bcrypt($request['password']),
             'temporary_token'=> $temporaryToken,
         ]);
+        foreach ($request['location'] as $key=>$locationId) {
+            UserLocation::create([
+                'user_id' => $user['id'],
+                'level' => $key,
+                'location_id' => $locationId,
+            ]);
+        }
 
         return response()->json([
             'temporary_token' => $temporaryToken
@@ -53,7 +60,6 @@ class UserAPIAuthController extends Controller
             'temporary_token' => 'required|uuid',
             'otp'             => 'required|digits:6',
         ]);
-
         $user = User::where('temporary_token', $request['temporary_token'])->firstOrFail();
 
         $user->forceFill([
@@ -72,7 +78,7 @@ class UserAPIAuthController extends Controller
     public function login(Request $request):JsonResponse
     {
         $request->validate([
-            'phone'    => 'required|email',
+            'phone'    => 'required',
             'password' => 'required',
         ]);
 

@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('otp_verification_codes', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->uuid('user_id')->nullable()->index();
+            $table->uuid('client_id')->nullable()->index();
             $table->string('channel', 20)->comment('sms,email');
             $table->string('context', 30)->comment('signup,login,2factor');
-            $table->string('code_hash');
+            $table->integer('code');
             $table->tinyInteger('attempts')->default(0);
             $table->tinyInteger('max_attempts')->default(5);
             $table->timestamp('expires_at');
