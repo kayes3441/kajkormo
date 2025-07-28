@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\V1\Auth\UserAPIAuthController;
+use App\Http\Controllers\API\V1\CategoryController;
 use App\Http\Controllers\API\V1\LocationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,4 +27,9 @@ Route::group([  'prefix' => 'v1'], function () {
             Route::get('list', 'getList');
 
     });
+    Route::prefix('category')
+        ->controller(CategoryController::class)->group(function () {
+            Route::get('list', 'getList');
+
+        });
 });
