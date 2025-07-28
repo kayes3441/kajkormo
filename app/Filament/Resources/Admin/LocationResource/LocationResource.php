@@ -75,7 +75,7 @@ class LocationResource extends Resource
                         return match ($level) {
                             'metropolitan'   => $query->where('level', 'division'),
                             'district'       => $query->whereIn('level', ['division', 'metropolitan']),
-                            'sub_district'   => $query->where('level', 'district'),
+                            'sub-district'   => $query->where('level', 'district'),
                             default          => $query->whereNull('id'),
                         };
                     }
@@ -117,7 +117,7 @@ class LocationResource extends Resource
                         'division'     => 'success',
                         'metropolitan' => 'info',
                         'district'     => 'warning',
-                        'sub_district'  => 'gray',
+                        'sub-district'  => 'gray',
                     }),
 
                 TextColumn::make('parent.name')

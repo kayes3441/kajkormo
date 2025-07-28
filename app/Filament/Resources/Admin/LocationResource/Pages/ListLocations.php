@@ -38,8 +38,8 @@ class ListLocations extends ListRecords
                 ->badge(Location::where('level', 'district')->count()),
 
             'Sub‑district' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('level', 'sub_district'))
-                ->badge(Location::where('level', 'sub_district')->count()),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('level', 'sub-district'))
+                ->badge(Location::where('level', 'sub-district')->count()),
         ];
     }
 }

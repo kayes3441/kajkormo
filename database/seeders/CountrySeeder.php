@@ -37,7 +37,7 @@ class CountrySeeder extends Seeder
                 'currency' => 'BDT',
                 'currency_name' => 'Bangladeshi Taka',
                 'currency_symbol' => '৳',
-                'location_labels' => ['division','metropolitan' ,'district', 'sub_district'],
+                'location_labels' => ['division','metropolitan' ,'district', 'sub-district'],
                 'timezones' => 'Asia/Dhaka',
                 'latitude' => 23.6850,
                 'longitude' => 90.3563,
