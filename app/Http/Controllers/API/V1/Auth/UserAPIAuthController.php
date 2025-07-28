@@ -64,21 +64,21 @@ class UserAPIAuthController extends Controller
 
     public function verifyOTP(Request $request): JsonResponse
     {
+
         $request->validate([
             'temporary_token' => 'required|uuid',
-            'otp'             => 'required|digits:6',
+            'otp'             => 'required|digits:6|numeric',
         ]);
-        $user = User::where('temporary_token', $request['temporary_token'])->firstOrFail();
-        $checkOTP = $this->checkOtpVerified(clientID:$user['id'],OTPCode:$request['code']);
-        if ($checkOTP['status'] === 'error') {
+        $user = User::where('temporary_token', $request['temporary_token'])->first();
+        $checkOTP = $this->checkOtpVerified(clientID:$user['id'],OTPCode:(int)$request['otp']);
+        if ($checkOTP['status'] === 403) {
             return response()->json($checkOTP);
         }
         $user->forceFill([
             'phone_verified_at' => now(),
             'temporary_token'   => null,
         ])->save();
-        $tokenResult = $user->createToken('apiToken');
-        $accessToken = $tokenResult->plainTextToken;
+        $accessToken = $user->createToken('apiToken')->accessToken;
         return response()->json([
             'access_token' => $accessToken,
             'token_type'   => 'Bearer',
@@ -87,8 +87,8 @@ class UserAPIAuthController extends Controller
 
     protected function checkOTPVerified($clientID,$OTPCode):array
     {
-       $getOTPCode =  OtpVerificationCode::where('client_id', $clientID)->first();
-       if($getOTPCode === $OTPCode){
+       $getOTPCode =  OtpVerificationCode::where(['client_id'=> $clientID])->first();
+       if($getOTPCode['code'] === $OTPCode){
            $getOTPCode->delete();
            return [
                'status' => 200,
@@ -122,10 +122,10 @@ class UserAPIAuthController extends Controller
             $code = $this->OTPGenerate(clientID: $user['id']);
             return response()->json(['message' => 'Phone not verified', 'temporary_token' => $temporaryToken,'code' => $code,], 403);
         }
-        $token = $user->createToken('mobile')->accessToken;
+        $accessToken = $user->createToken('apiToken')->accessToken;
 
         return response()->json([
-            'access_token' => $token,
+            'access_token' => $accessToken,
             'token_type'   => 'Bearer',
         ]);
     }

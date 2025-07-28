@@ -14,12 +14,16 @@ class LocationController extends Controller
     {
         $params = $request['params'];
         $parentID = $request['parent_id'];
-        $locations = Location::select(['id','name','parent_id'])->where(['level'=>$params, 'parent_id'=>$parentID])->get();
+        $locations = Location::select(['id','name','parent_id'])->where(['level'=>$params])
+            ->when(!is_null($parentID),function ($query) use ($parentID){
+                return $query->where(['parent_id'=>$parentID]);
+            })->get();
         $currentPage = $request['offset'] ?? Paginator::resolveCurrentPage('page');
         $locations = new LengthAwarePaginator($locations, $locations->count(), $request->get('limit', 10), $currentPage, [
             'path' => Paginator::resolveCurrentPath(),
             'appends' => $request->all(),
         ]);
+
         return [
             'total_size' => $locations->total(),
             'limit' => (int)$request['limit'],
