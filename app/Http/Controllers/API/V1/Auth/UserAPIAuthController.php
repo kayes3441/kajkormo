@@ -64,15 +64,21 @@ class UserAPIAuthController extends Controller
 
     public function verifyOTP(Request $request): JsonResponse
     {
-
-        $request->validate([
+        $validator = Validator::make($request->all(),[
             'temporary_token' => 'required|uuid',
             'otp'             => 'required|digits:6|numeric',
         ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
         $user = User::where('temporary_token', $request['temporary_token'])->first();
         $checkOTP = $this->checkOtpVerified(clientID:$user['id'],OTPCode:(int)$request['otp']);
         if ($checkOTP['status'] === 403) {
-            return response()->json($checkOTP);
+            return response()->json($checkOTP,403);
         }
         $user->forceFill([
             'phone_verified_at' => now(),

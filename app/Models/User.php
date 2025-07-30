@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as UserAuth;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Laravel\Passport\HasApiTokens;
 
@@ -22,12 +23,14 @@ class User extends UserAuth
     protected $fillable = [
         'first_name',
         'last_name',
+        'image',
         'email',
         'gender',
         'temporary_token',
         'phone',
         'password',
         'phone_verified_at',
+        'address'
     ];
 
     /**
@@ -51,6 +54,16 @@ class User extends UserAuth
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    protected $appends = ['image_url'];
+
+    public function getImageURLAttribute(): string|null
+    {
+        if (!$this['image']) {
+            return null;
+        }
+        $storage = config('filesystems.disks.default') ?? 'public';
+        return Storage::disk($storage)->url('profile/'.$this['image']);
     }
 
     protected static function boot():void
