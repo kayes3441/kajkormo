@@ -38,9 +38,9 @@ Route::group([  'prefix' => 'v1'], function () {
             ->controller(ProfileController::class)
             ->group(function () {
                 Route::get('info', 'getInfo');
-                Route::post('update-info', 'updateInfo');
-                Route::get('update-password', 'updatePassword');
-                Route::get('update-location', 'updateLocation');
+                Route::put('update-info', 'updateInfo');
+                Route::put('update-password', 'updatePassword');
+                Route::put('update-location', 'updateLocation');
             });
 
     });
