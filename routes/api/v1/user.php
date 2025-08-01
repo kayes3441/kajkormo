@@ -33,13 +33,16 @@ Route::group([  'prefix' => 'v1'], function () {
             Route::get('list', 'getList');
 
         });
-    Route::prefix('profile')
-        ->middleware(['auth:api'])
-        ->controller(ProfileController::class)
-        ->group(function () {
-            Route::get('info', 'getInfo');
-            Route::post('update-info', 'updateInfo');
-            Route::get('update-password', 'updatePassword');
-            Route::get('update-location', 'updateLocation');
-        });
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::prefix('profile')
+            ->controller(ProfileController::class)
+            ->group(function () {
+                Route::get('info', 'getInfo');
+                Route::post('update-info', 'updateInfo');
+                Route::get('update-password', 'updatePassword');
+                Route::get('update-location', 'updateLocation');
+            });
+
+    });
+
 });
