@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\V1\Auth\UserAPIAuthController;
 use App\Http\Controllers\API\V1\CategoryController;
 use App\Http\Controllers\API\V1\LocationController;
+use App\Http\Controllers\API\V1\PostController;
 use App\Http\Controllers\API\V1\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -38,10 +39,14 @@ Route::group([  'prefix' => 'v1'], function () {
             ->controller(ProfileController::class)
             ->group(function () {
                 Route::get('info', 'getInfo');
-                Route::put('update-info', 'updateInfo');
-                Route::put('update-password', 'updatePassword');
-                Route::put('update-location', 'updateLocation');
+                Route::patch('update-info', 'updateInfo');
+                Route::patch('update-password', 'updatePassword');
+                Route::patch('update-location', 'updateLocation');
             });
+        Route::prefix('post')->controller(PostController::class)->group(function () {
+            Route::get('list', 'getList');
+            Route::post('add', 'add');
+        });
 
     });
 
