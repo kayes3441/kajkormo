@@ -27,7 +27,7 @@ class Location extends Model
     {
         return $this->hasMany(self::class, 'parent_id');
     }
-
+    protected $hidden = ['pivot'];
     protected static function booted(): void
     {
         static::creating(function ($model) {

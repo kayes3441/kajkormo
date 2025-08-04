@@ -14,9 +14,10 @@ class PostController extends Controller
     public function __construct(
         public readonly Post $post
     ){}
-    public function getList(Request $request)
+    public function getList(Request $request):JsonResponse
     {
-        return null;
+        $posts = $this->post->with(['locations'])->where('user_id', $request->user()->id)->get();
+        return response()->json($posts);
     }
     public function add(PostAddRequest $request): JsonResponse
     {

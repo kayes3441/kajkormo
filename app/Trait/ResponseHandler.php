@@ -10,7 +10,7 @@ trait ResponseHandler
     {
         $errors = [];
         foreach ($validator->errors()->getMessages() as $index => $error) {
-            $errors[] = ['error_code' => $index, 'message' => $error[0]];
+            $errors[] = ['error_field' => $index, 'message' => $error[0]];
         }
         return $errors;
     }

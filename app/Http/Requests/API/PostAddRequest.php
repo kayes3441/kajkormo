@@ -39,6 +39,6 @@ class PostAddRequest extends FormRequest
     }
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json(['errors' => $this->errorProcessor($validator)]));
+        throw new HttpResponseException(response()->json(['errors' => $this->errorProcessor($validator)],422));
     }
 }

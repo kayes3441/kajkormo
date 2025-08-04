@@ -34,11 +34,10 @@ class Post extends Model
             }
         });
     }
-
     public function locations(): MorphToMany
     {
-        return $this->morphToMany(Locatable::class, 'locatable')
-            ->withPivot('level')
-            ->withTimestamps();
+        return $this->morphToMany(Location::class, 'locatable')
+            ->withTimestamps()
+            ->select('locations.id', 'locations.name', 'locations.level');
     }
 }
