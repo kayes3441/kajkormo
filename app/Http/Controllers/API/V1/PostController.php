@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\PostAddRequest;
+use App\Http\Resources\API\PostResource;
 use App\Models\Post;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ class PostController extends Controller
     public function getList(Request $request):JsonResponse
     {
         $posts = $this->post->with(['locations'])->where('user_id', $request->user()->id)->get();
+        $posts = PostResource::collection($posts);
         return response()->json($posts);
     }
     public function add(PostAddRequest $request): JsonResponse
