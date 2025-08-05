@@ -45,7 +45,7 @@ return [
             'provider' => 'admins',
         ],
         'api' => [
-            'driver' => 'passport', // required for Laravel Passport
+            'driver' => 'passport',
             'provider' => 'users',
         ],
     ],

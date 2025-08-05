@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\API;
+namespace App\Http\Resources\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LocationResource extends JsonResource
+class CategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,7 +17,8 @@ class LocationResource extends JsonResource
         return [
             'id'   => $this['id'],
             'name' => $this['name'],
-            'type' => $this['type'],
+            'slug' => $this['slug'],
+            'level' => $this['level']
         ];
     }
 }

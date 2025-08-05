@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\API\CategoryResource;
+use App\Http\Resources\Api\CategoryResource;
 use App\Models\Category;
 use App\Trait\PaginatesWithOffsetTrait;
 use Illuminate\Http\Request;
@@ -15,8 +15,8 @@ class CategoryController extends Controller
     {
         $params = $request['params'];
         $parentID = $request['parent_id'];
-        $limit =    $request['limit']??10;
-        $offset =    $request['offset']??1;
+        $limit =    $request['limit'] ?? 10;
+        $offset =    $request['offset'] ?? 1;
         $this->resolveOffsetPagination(offset: $request['offset']);
         $categories = Category::select(['id','name','parent_id','slug','level'])
             ->when(isset($params), function ($query) use ($params) {
@@ -26,7 +26,7 @@ class CategoryController extends Controller
                 return $query->where(['parent_id' => $parentID]);
             })
             ->orderBy('created_at', 'desc')
-            ->paginate($request->get('limit',10));
+            ->paginate($limit);
         return $this->paginatedResponse(collection: $categories, resourceClass: CategoryResource::class, limit: $limit,offset: $offset, key:$params??'categories');
     }
 }

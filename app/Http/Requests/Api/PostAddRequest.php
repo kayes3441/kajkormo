@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\API;
+namespace App\Http\Requests\Api;
 
 use App\Trait\ResponseHandler;
 use Illuminate\Contracts\Validation\ValidationRule;

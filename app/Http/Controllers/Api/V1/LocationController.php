@@ -3,36 +3,29 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\API\LocationResource;
+use App\Http\Resources\Api\LocationResource;
 use App\Models\Location;
+use App\Trait\PaginatesWithOffsetTrait;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
 
 class LocationController extends Controller
 {
+    use PaginatesWithOffsetTrait;
     public function getList(Request $request):array
     {
         $params = $request['params'];
         $parentID = $request['parent_id'];
-        $currentPage = $request['offset'] ?? Paginator::resolveCurrentPage('page');
-        Paginator::currentPageResolver(function () use ($currentPage) {
-            return $currentPage;
-        });
+        $limit =    $request['limit']??10;
+        $offset =    $request['offset']??1;
+        $this->resolveOffsetPagination(offset: $request['offset']);
         $locations = Location::select(['id','name','parent_id'])
             ->when(isset($params), function ($query) use ($params) {
                 return $query->where(['level' => $params]);
             })
             ->when(!is_null($parentID),function ($query) use ($parentID){
                 return $query->where(['parent_id'=>$parentID]);
-            })->paginate($request->get('limit',10));;
+            })->paginate($limit);;
 
-
-        return [
-            'total_size' => $locations->total(),
-            'limit' => (int)$request['limit'],
-            'offset' => (int)$request['offset'],
-            'locations' => LocationResource::collection($locations)
-        ];
+        return $this->paginatedResponse(collection: $locations, resourceClass: LocationResource::class, limit: $limit,offset: $offset, key:$params??'locations');
     }
 }

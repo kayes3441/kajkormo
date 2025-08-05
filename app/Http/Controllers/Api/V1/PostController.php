@@ -3,23 +3,27 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\API\PostAddRequest;
-use App\Http\Resources\API\PostResource;
+use App\Http\Requests\Api\PostAddRequest;
+use App\Http\Resources\Api\PostResource;
 use App\Models\Post;
+use App\Trait\PaginatesWithOffsetTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
+    use PaginatesWithOffsetTrait;
     public function __construct(
         public readonly Post $post
     ){}
-    public function getList(Request $request):JsonResponse
+    public function getList(Request $request):array
     {
+        $limit =    $request['limit']??10;
+        $offset =    $request['offset']??1;
+        $this->resolveOffsetPagination(offset: $request['offset']);
         $posts = $this->post->with(['locations'])->where('user_id', $request->user()->id)->get();
-        $posts = PostResource::collection($posts);
-        return response()->json($posts);
+        return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
     }
     public function add(PostAddRequest $request): JsonResponse
     {
