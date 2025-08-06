@@ -16,13 +16,18 @@ class PostResource extends JsonResource
     {
         return [
             'id'                => $this['id'],
-            'user_id'           => $this['user_id'],
+            'user_id'           => $this->when(!($this['user_id'] === null), $this['user_id']),
             'title'             => $this['title'],
             'description'       => $this['description'],
             'price'             => $this['price'],
             'work_type'         => $this['work_type'],
             'payment_type'      => $this['payment_type'],
-            'locations' => LocationResource::collection($this->whenLoaded('locations')),
+            'locations' => $this->whenLoaded('locations'),
+            'user'     => UserResource::make($this->whenLoaded('user')),
         ];
+    }
+    protected function shouldShowPostFields()
+    {
+        return $this->showPostFields ?? false;
     }
 }

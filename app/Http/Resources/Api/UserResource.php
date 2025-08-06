@@ -5,7 +5,7 @@ namespace App\Http\Resources\Api;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LocationResource extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,8 +16,9 @@ class LocationResource extends JsonResource
     {
         return [
             'id'   => $this['id'],
-            'name' => $this['name'],
-            'level' => $this['level'],
+            'first_name' => $this['first_name'],
+            'last_name' => $this['last_name'],
         ];
     }
+
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\V1;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\PostAddRequest;
@@ -22,7 +22,23 @@ class PostController extends Controller
         $limit =    $request['limit']??10;
         $offset =    $request['offset']??1;
         $this->resolveOffsetPagination(offset: $request['offset']);
-        $posts = $this->post->with(['locations'])->where('user_id', $request->user()->id)->get();
+
+        $filter = [
+          'category_id' => $request['category_id']??null,
+          'subcategory_id' => $request['subcategory_id']??null,
+          'sub_subcategory_id' => $request['sub_subcategory_id']??null,
+          'location'=>$request['location']??null,
+          'userId'=>$request->user()->id??null,
+        ];
+        $posts = $this->post->select([
+                'id',
+                'title',
+                'description',
+                'price',
+                'work_type',
+                'payment_type',
+            ])
+            ->with(['locations'])->getListByFilter(filter:$filter)->paginate($limit);
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
     }
     public function add(PostAddRequest $request): JsonResponse
