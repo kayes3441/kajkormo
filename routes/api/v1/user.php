@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\API\V1\Auth\UserAPIAuthController;
-use App\Http\Controllers\API\V1\CategoryController;
-use App\Http\Controllers\API\V1\LocationController;
-use App\Http\Controllers\API\V1\PostController;
-use App\Http\Controllers\API\V1\ProfileController;
+use App\Http\Controllers\Api\V1\Auth\UserAPIAuthController;
+use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\LocationController;
+use App\Http\Controllers\Api\V1\PostController;
+use App\Http\Controllers\Api\V1\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
