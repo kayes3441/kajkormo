@@ -62,4 +62,28 @@ class PostController extends Controller
         return response()->json(['message' => 'Post Created successfully.'],200);
     }
 
+    public function getAllList(Request $request):array
+    {
+        $limit =    $request['limit']??10;
+        $offset =    $request['offset']??1;
+        $this->resolveOffsetPagination(offset: $request['offset']);
+        $filter = [
+            'category_id' => $request['category_id']??null,
+            'subcategory_id' => $request['subcategory_id']??null,
+            'sub_subcategory_id' => $request['sub_subcategory_id']??null,
+            'location'=>$request['location']??null,
+        ];
+        $posts = $this->post->select([
+            'id',
+            'user_id',
+            'title',
+            'description',
+            'price',
+            'work_type',
+            'payment_type',
+        ])
+            ->with(['locations','user'])->getListByFilter(filter:$filter)->paginate($limit);
+        return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
+    }
+
 }

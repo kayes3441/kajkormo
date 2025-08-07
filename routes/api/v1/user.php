@@ -34,6 +34,10 @@ Route::group([  'prefix' => 'v1'], function () {
             Route::get('list', 'getList');
 
         });
+    Route::prefix('post')->controller(PostController::class)->group(function () {
+        Route::get('all-list', 'getAllList');
+    });
+
     Route::group(['middleware' => 'auth:api'], function () {
         Route::prefix('profile')
             ->controller(ProfileController::class)
@@ -47,7 +51,5 @@ Route::group([  'prefix' => 'v1'], function () {
             Route::get('list', 'getList');
             Route::post('add', 'add');
         });
-
     });
-
 });
