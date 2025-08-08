@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\PostAddRequest;
 use App\Http\Resources\Api\PostResource;
+use App\Models\FavoritePost;
 use App\Models\Post;
 use App\Trait\PaginatesWithOffsetTrait;
 use Illuminate\Http\JsonResponse;
@@ -15,7 +16,8 @@ class PostController extends Controller
 {
     use PaginatesWithOffsetTrait;
     public function __construct(
-        public readonly Post $post
+        public readonly Post $post,
+        public readonly FavoritePost $favoritePost
     ){}
     public function getList(Request $request):array
     {
@@ -84,6 +86,22 @@ class PostController extends Controller
         ])
             ->with(['locations','user'])->getListByFilter(filter:$filter)->paginate($limit);
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
+    }
+
+    public function addFavorite(Request $request):JsonResponse
+    {
+        $validate = Validator::make($request->all(),[
+            'post_id' => 'required|uuid|exists:posts,id',
+        ]);
+        if($validate->fails()){
+            return response()->json(['message' => $validate->errors()], 422);
+        }
+        $user = $request->user();
+        $this->favoritePost->create([
+            'post_id' => $request['post_id'],
+            'user_id' => $user['id'],
+        ]);
+        return response()->json(['message' => 'Post added to favorite list.'], 200);
     }
 
 }

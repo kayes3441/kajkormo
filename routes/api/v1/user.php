@@ -47,13 +47,16 @@ Route::group([  'prefix' => 'v1'], function () {
                 Route::patch('update-info', 'updateInfo');
                 Route::patch('update-password', 'updatePassword');
                 Route::patch('update-location', 'updateLocation');
+
             });
         Route::prefix('post')->controller(PostController::class)->group(function () {
             Route::get('list', 'getList');
             Route::post('add', 'add');
+            Route::post('add-favorite', 'addFavorite');
         });
         Route::prefix('review-post')->controller(ReviewPostController::class)->group(function () {
             Route::post('add', 'add');
         });
+
     });
 });
