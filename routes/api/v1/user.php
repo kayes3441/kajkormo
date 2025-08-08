@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ReviewPostController;
 use App\Http\Controllers\Api\V1\Auth\UserAPIAuthController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\LocationController;
@@ -49,6 +50,9 @@ Route::group([  'prefix' => 'v1'], function () {
             });
         Route::prefix('post')->controller(PostController::class)->group(function () {
             Route::get('list', 'getList');
+            Route::post('add', 'add');
+        });
+        Route::prefix('review-post')->controller(ReviewPostController::class)->group(function () {
             Route::post('add', 'add');
         });
     });
