@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Str;
@@ -72,5 +73,9 @@ class Post extends Model
                     }
                 }
             });
+    }
+    public function favoritePost():HasMany
+    {
+        return $this->hasMany(FavoritePost::class,'post_id');
     }
 }

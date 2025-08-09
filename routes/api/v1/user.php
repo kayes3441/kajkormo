@@ -53,6 +53,7 @@ Route::group([  'prefix' => 'v1'], function () {
             Route::get('list', 'getList');
             Route::post('add', 'add');
             Route::post('add-favorite', 'addFavorite');
+            Route::get('favorite-post-list', 'getFavoritePostList');
         });
         Route::prefix('review-post')->controller(ReviewPostController::class)->group(function () {
             Route::post('add', 'add');

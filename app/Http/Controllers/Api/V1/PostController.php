@@ -104,4 +104,37 @@ class PostController extends Controller
         return response()->json(['message' => 'Post added to favorite list.'], 200);
     }
 
+    public function getFavoritePostList(Request $request):array
+    {
+        $limit =    $request['limit']??10;
+        $offset =    $request['offset']??1;
+        $this->resolveOffsetPagination(offset: $request['offset']);
+        $userId = $request->user()->id;
+        $filter = [
+            'category_id' => $request['category_id']??null,
+            'subcategory_id' => $request['subcategory_id']??null,
+            'sub_subcategory_id' => $request['sub_subcategory_id']??null,
+            'location'=>$request['location']??null,
+            'userId'=> $userId,
+        ];
+        $posts = $this->post
+            ->whereHas('favoritePost', function ($query) use ($filter) {
+                return $query->where('user_id', $filter['userId']);
+            })
+            ->select([
+
+                'id',
+                'user_id',
+                'title',
+                'description',
+                'price',
+                'work_type',
+                'payment_type',
+            ])
+            ->with(['locations'])
+            ->getListByFilter(filter:$filter)
+            ->paginate($limit);
+        return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
+    }
+
 }
