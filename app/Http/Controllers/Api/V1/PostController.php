@@ -40,7 +40,7 @@ class PostController extends Controller
                 'work_type',
                 'payment_type',
             ])
-            ->with(['locations'])->getListByFilter(filter:$filter)->paginate($limit);
+            ->with(['locations','reviews'])->getListByFilter(filter:$filter)->paginate($limit);
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
     }
     public function add(PostAddRequest $request): JsonResponse
@@ -75,16 +75,20 @@ class PostController extends Controller
             'sub_subcategory_id' => $request['sub_subcategory_id']??null,
             'location'=>$request['location']??null,
         ];
-        $posts = $this->post->select([
-            'id',
-            'user_id',
-            'title',
-            'description',
-            'price',
-            'work_type',
-            'payment_type',
-        ])
-            ->with(['locations','user'])->getListByFilter(filter:$filter)->paginate($limit);
+        $posts = $this->post
+            ->select([
+                'id',
+                'user_id',
+                'title',
+                'description',
+                'price',
+                'work_type',
+                'payment_type',
+            ])
+            ->with(['locations','user','reviews'])
+            ->getListByFilter(filter:$filter)
+            ->paginate($limit);
+
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
     }
 

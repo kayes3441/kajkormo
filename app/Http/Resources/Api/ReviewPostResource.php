@@ -16,8 +16,8 @@ class ReviewPostResource extends JsonResource
     {
         return [
             'id'   => $this['id'],
-            'name' => $this['name'],
-            'level' => $this['level'],
+            'rating' => $this['rating'],
+            'comment' => $this['comment'],
         ];
     }
 }

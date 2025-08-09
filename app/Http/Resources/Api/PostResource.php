@@ -22,8 +22,14 @@ class PostResource extends JsonResource
             'price'             => $this['price'],
             'work_type'         => $this['work_type'],
             'payment_type'      => $this['payment_type'],
+            'average_rating'      => $this['average_rating'],
             'locations' => $this->whenLoaded('locations'),
             'user'     => UserResource::make($this->whenLoaded('user')),
+            'reviews' => $this->whenLoaded('reviews', function () {
+                return $this->reviews->isNotEmpty()
+                    ? ReviewPostResource::collection($this->reviews)
+                    : null;
+            }),
         ];
     }
     protected function shouldShowPostFields()

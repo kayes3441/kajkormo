@@ -74,8 +74,18 @@ class Post extends Model
                 }
             });
     }
+    protected $appends = ['average_rating'];
     public function favoritePost():HasMany
     {
         return $this->hasMany(FavoritePost::class,'post_id');
+    }
+    public function reviews():HasMany
+    {
+        return $this->hasMany(ReviewPost::class,'post_id');
+    }
+
+    public function getAverageRatingAttribute():float|int
+    {
+         return round($this->reviews()->avg('rating') ?? 0, 2);
     }
 }
