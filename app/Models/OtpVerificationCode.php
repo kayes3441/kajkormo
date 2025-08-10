@@ -13,7 +13,7 @@ class OtpVerificationCode extends Model
         'client_id',
         'channel',
         'context',
-        'code',
+        'token',
     ];
     protected static function boot():void
     {

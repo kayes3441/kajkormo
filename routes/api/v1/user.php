@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ReviewPostController;
+use App\Http\Controllers\Api\V1\Auth\ForgetPasswordController;
 use App\Http\Controllers\Api\V1\Auth\UserAPIAuthController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\LocationController;
@@ -23,6 +24,14 @@ Route::group([  'prefix' => 'v1'], function () {
             Route::get('otp-verify', 'verifyOTP');
             Route::get('login', 'login');
             Route::get('logout', 'logout')->middleware('auth:api');
+        });
+
+    });
+    Route::group(['prefix' => 'forget-password',], function () {
+        Route::controller( ForgetPasswordController::class)->group(function () {
+            Route::post('reset-request', 'resetPasswordRequest');
+            Route::post('otp-verify', 'OtpVerification');
+            Route::patch('change-password', 'changePassword');
         });
     });
     Route::prefix('location')

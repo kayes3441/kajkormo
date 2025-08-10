@@ -50,7 +50,7 @@ return new class extends Migration
             $table->tinyInteger('attempts')->default(0);
             $table->tinyInteger('max_attempts')->default(5);
             $table->timestamp('expires_at')->nullable();
-            $table->timestamp('created_at')->nullable();
+            $table->timestamps();
         });
 
         Schema::create('sessions', function (Blueprint $table) {

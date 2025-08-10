@@ -58,7 +58,7 @@ class UserAPIAuthController extends Controller
         $token = $this->OTPGenerate(clientID: $user['id']);
         return response()->json([
             'temporary_token' => $temporaryToken,
-            'code' => $token,
+            'token' => $token,
         ], 201);
     }
 
@@ -66,7 +66,7 @@ class UserAPIAuthController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'temporary_token' => 'required|uuid',
-            'otp'             => 'required|digits:6|numeric',
+            'token'             => 'required|digits:6|numeric',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -76,7 +76,7 @@ class UserAPIAuthController extends Controller
             ], 422);
         }
         $user = User::where('temporary_token', $request['temporary_token'])->first();
-        $checkOTP = $this->checkOtpVerified(clientID:$user['id'],OTPCode:(int)$request['otp']);
+        $checkOTP = $this->checkOtpVerified(clientID:$user['id'],OTPCode:$request['token']);
         if ($checkOTP['status'] === 403) {
             return response()->json($checkOTP,403);
         }
@@ -126,7 +126,7 @@ class UserAPIAuthController extends Controller
                 'temporary_token'   => $temporaryToken,
             ])->save();
             $token = $this->OTPGenerate(clientID: $user['id']);
-            return response()->json(['message' => 'Phone not verified', 'temporary_token' => $temporaryToken,'code' => $token,], 403);
+            return response()->json(['message' => 'Phone not verified', 'temporary_token' => $temporaryToken,'token' => $token,], 403);
         }
         $accessToken = $user->createToken('apiToken')->accessToken;
 
