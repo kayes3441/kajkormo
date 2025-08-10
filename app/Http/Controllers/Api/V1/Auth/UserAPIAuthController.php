@@ -55,10 +55,10 @@ class UserAPIAuthController extends Controller
                 'location_id' => $locationId,
             ]);
         }
-        $code = $this->OTPGenerate(clientID: $user['id']);
+        $token = $this->OTPGenerate(clientID: $user['id']);
         return response()->json([
             'temporary_token' => $temporaryToken,
-            'code' => $code,
+            'code' => $token,
         ], 201);
     }
 
@@ -94,7 +94,7 @@ class UserAPIAuthController extends Controller
     protected function checkOTPVerified($clientID,$OTPCode):array
     {
        $getOTPCode =  OtpVerificationCode::where(['client_id'=> $clientID])->first();
-       if($getOTPCode['code'] === $OTPCode){
+       if($getOTPCode['token'] === $OTPCode){
            $getOTPCode->delete();
            return [
                'status' => 200,
@@ -125,8 +125,8 @@ class UserAPIAuthController extends Controller
                 'phone_verified_at' => null,
                 'temporary_token'   => $temporaryToken,
             ])->save();
-            $code = $this->OTPGenerate(clientID: $user['id']);
-            return response()->json(['message' => 'Phone not verified', 'temporary_token' => $temporaryToken,'code' => $code,], 403);
+            $token = $this->OTPGenerate(clientID: $user['id']);
+            return response()->json(['message' => 'Phone not verified', 'temporary_token' => $temporaryToken,'code' => $token,], 403);
         }
         $accessToken = $user->createToken('apiToken')->accessToken;
 
@@ -139,14 +139,14 @@ class UserAPIAuthController extends Controller
     protected function OTPGenerate($clientID):int
     {
         OtpVerificationCode::where('client_id', $clientID)->delete();
-        $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $token = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         OtpVerificationCode::create([
             'client_id' => $clientID,
             'channel' => 'sms',
             'context' => 'sign_up',
-            'code' =>$code,
+            'token' =>$token,
         ]);
-        return $code;
+        return $token;
     }
 
     public function logout(Request $request):JsonResponse

@@ -43,7 +43,8 @@ return new class extends Migration
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid(' user_id')->index();
+            $table->foreignUuid(' client_id')->index();
+            $table->uuid('temporary_token')->nullable();
             $table->string('token');
             $table->string('channel', 20)->comment('sms,email');
             $table->tinyInteger('attempts')->default(0);

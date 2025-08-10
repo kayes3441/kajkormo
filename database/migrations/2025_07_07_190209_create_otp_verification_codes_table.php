@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('client_id')->nullable()->index();
             $table->string('channel', 20)->comment('sms,email');
             $table->string('context', 30)->comment('signup,login,2factor');
-            $table->string('code',6);
+            $table->string('token');
             $table->tinyInteger('attempts')->default(0);
             $table->tinyInteger('max_attempts')->default(5);
             $table->timestamp('expires_at')->nullable();
