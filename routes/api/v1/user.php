@@ -61,11 +61,13 @@ Route::group([  'prefix' => 'v1'], function () {
         Route::prefix('post')->controller(PostController::class)->group(function () {
             Route::get('list', 'getList');
             Route::post('add', 'add');
-            Route::post('update', 'update');
+
+            // update and images added need to work ....
+            Route::patch('update', 'update');
             Route::get('details', 'getDetails');
             Route::post('add-favorite', 'addFavorite');
             Route::get('favorite-post-list', 'getFavoritePostList');
-            Route::get('delete', 'delete');
+            Route::delete('delete', 'delete');
         });
         Route::prefix('review-post')->controller(ReviewPostController::class)->group(function () {
             Route::get('list', 'getList');
