@@ -39,8 +39,11 @@ class PostController extends Controller
                 'price',
                 'work_type',
                 'payment_type',
+                'created_at',
+                'updated_at',
             ])
-            ->with(['locations','reviews'])->getListByFilter(filter:$filter)->paginate($limit);
+            ->with(['location'])
+            ->getListByFilter(filter:$filter)->paginate($limit);
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
     }
     public function add(PostAddRequest $request): JsonResponse
@@ -84,12 +87,33 @@ class PostController extends Controller
                 'price',
                 'work_type',
                 'payment_type',
+                'created_at',
+                'updated_at',
             ])
-            ->with(['locations','user','reviews'])
+            ->with(['location','user'])
             ->getListByFilter(filter:$filter)
             ->paginate($limit);
 
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
+    }
+
+    public function getDetails(Request $request):JsonResponse
+    {
+        $post = $this->post
+            ->with(['location','user'])
+            ->where(['id'=> $request['[post_id']])
+            ->select([
+                'id',
+                'user_id',
+                'title',
+                'description',
+                'price',
+                'work_type',
+                'payment_type',
+                'created_at',
+                'updated_at',
+            ])->first();
+        return response()->json(new PostResource($post));
     }
 
     public function addFavorite(Request $request):JsonResponse
@@ -134,11 +158,31 @@ class PostController extends Controller
                 'price',
                 'work_type',
                 'payment_type',
+                'created_at',
+                'updated_at',
             ])
-            ->with(['locations'])
+            ->with(['location'])
             ->getListByFilter(filter:$filter)
             ->paginate($limit);
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
+    }
+
+    public function delete(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $post = $this->post->where([
+            'id' => $request['id'],
+            'user_id' => $user['id'],
+        ])->first();
+
+        if (!$post) {
+            return response()->json(['message' => 'Post not found or unauthorized.'], 404);
+        }
+
+        $post->delete();
+
+        return response()->json(['message' => 'Post deleted successfully.'], 200);
     }
 
 }

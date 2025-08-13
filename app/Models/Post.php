@@ -74,7 +74,7 @@ class Post extends Model
                 }
             });
     }
-    protected $appends = ['average_rating'];
+    protected $appends = ['average_rating','review_count'];
     public function favoritePost():HasMany
     {
         return $this->hasMany(FavoritePost::class,'post_id');
@@ -87,5 +87,9 @@ class Post extends Model
     public function getAverageRatingAttribute():float|int
     {
          return round($this->reviews()->avg('rating') ?? 0, 2);
+    }
+    public function getReviewCountAttribute():float|int
+    {
+        return $this->reviews()->count();
     }
 }

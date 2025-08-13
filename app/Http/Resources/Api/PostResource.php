@@ -23,6 +23,7 @@ class PostResource extends JsonResource
             'work_type'         => $this['work_type'],
             'payment_type'      => $this['payment_type'],
             'average_rating'      => $this['average_rating'],
+            'review_count'      => $this['review_count'],
             'locations' => $this->whenLoaded('locations'),
             'user'     => UserResource::make($this->whenLoaded('user')),
             'reviews' => $this->whenLoaded('reviews', function () {
@@ -30,6 +31,8 @@ class PostResource extends JsonResource
                     ? ReviewPostResource::collection($this->reviews)
                     : null;
             }),
+            'created_at' => $this['created_at']->toDateTimeString(),
+            'updated_at' => $this['updated_at']->toDateTimeString(),
         ];
     }
     protected function shouldShowPostFields()
