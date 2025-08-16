@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Post extends Model
@@ -24,8 +25,11 @@ class Post extends Model
         'price',
         'work_type',
         'payment_type',
-        'image',
+        'images',
         'status',
+    ];
+    protected $casts = [
+        'images' => 'array',
     ];
 
     protected static function boot():void
@@ -74,7 +78,7 @@ class Post extends Model
                 }
             });
     }
-    protected $appends = ['average_rating','review_count'];
+    protected $appends = ['average_rating','review_count','images_url'];
     public function favoritePost():HasMany
     {
         return $this->hasMany(FavoritePost::class,'post_id');
@@ -88,6 +92,18 @@ class Post extends Model
     {
          return round($this->reviews()->avg('rating') ?? 0, 2);
     }
+
+    public function getImagesUrlAttribute(): ?array
+    {
+        if (empty($this->images)) {
+            return null;
+        }
+        $storage = config('filesystems.default', 'public');
+        return collect($this->images)->map(function ($image) use ($storage) {
+            return Storage::disk($storage)->url('post/'.$image);
+        })->toArray();
+    }
+
     public function getReviewCountAttribute():float|int
     {
         return $this->reviews()->count();

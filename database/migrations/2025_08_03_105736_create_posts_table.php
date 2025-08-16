@@ -22,7 +22,7 @@ return new class extends Migration
             $table->decimal('price', 10, 5)->default(0);
             $table->string('work_type')->nullable();
             $table->string('payment_type')->nullable();
-            $table->string('image')->nullable();
+            $table->json('images')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->timestamp('published_at')->nullable();
             $table->timestamps();

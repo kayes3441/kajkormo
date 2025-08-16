@@ -62,13 +62,12 @@ Route::group([  'prefix' => 'v1'], function () {
             Route::get('list', 'getList');
             Route::post('add', 'add');
 
-            // update and images added need to work ....
-            Route::patch('update', 'update');
+            Route::patch('update', 'deletePost');
             Route::get('details', 'getDetails');
             Route::post('add-favorite', 'addFavorite');
             Route::get('favorite-post-list', 'getFavoritePostList');
             Route::delete('remove-favorite', 'removeFavorite');
-            Route::delete('delete', 'delete');
+            Route::delete('delete', 'deletePost');
         });
         Route::prefix('review-post')->controller(ReviewPostController::class)->group(function () {
             Route::get('list', 'getList');

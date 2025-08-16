@@ -7,6 +7,7 @@ use App\Http\Requests\Api\PostAddRequest;
 use App\Http\Resources\Api\PostResource;
 use App\Models\FavoritePost;
 use App\Models\Post;
+use App\Trait\FileManagerTrait;
 use App\Trait\PaginatesWithOffsetTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
-    use PaginatesWithOffsetTrait;
+    use PaginatesWithOffsetTrait ,FileManagerTrait;
     public function __construct(
         public readonly Post $post,
         public readonly FavoritePost $favoritePost
@@ -39,16 +40,24 @@ class PostController extends Controller
                 'price',
                 'work_type',
                 'payment_type',
+                'images',
                 'created_at',
                 'updated_at',
             ])
-            ->with(['location'])
+            ->with(['locations'])
             ->getListByFilter(filter:$filter)->paginate($limit);
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
     }
     public function add(PostAddRequest $request): JsonResponse
     {
         $user = $request->user();
+        $images = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $this->upload(dir:'post',image: $image);
+                $images[] = $path;
+            }
+        }
         $post = $this->post->create([
             'user_id'           => $user['id'],
             'title'             => $request['title'],
@@ -57,6 +66,7 @@ class PostController extends Controller
             'subcategory_id'    => $request['subcategory_id'],
             'sub_subcategory_id'=> $request['sub_subcategory_id'],
             'price'             => $request['price'] ?? 0,
+            'images'             => $images,
             'work_type'         => $request['work_type'],
             'payment_type'      => $request['payment_type'],
             'published_at'      => now(),
@@ -87,20 +97,20 @@ class PostController extends Controller
                 'price',
                 'work_type',
                 'payment_type',
+                'images',
                 'created_at',
                 'updated_at',
             ])
-            ->with(['location','user'])
-            ->getListByFilter(filter:$filter)
+            ->with(['locations','user'])
+            ->getListByFilter(filter:$filter) 
             ->paginate($limit);
-
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
     }
 
     public function getDetails(Request $request):JsonResponse
     {
         $post = $this->post
-            ->with(['location','user'])
+            ->with(['locations','user'])
             ->where(['id'=> $request['[post_id']])
             ->select([
                 'id',
@@ -110,6 +120,7 @@ class PostController extends Controller
                 'price',
                 'work_type',
                 'payment_type',
+                'images',
                 'created_at',
                 'updated_at',
             ])->first();
@@ -158,10 +169,11 @@ class PostController extends Controller
                 'price',
                 'work_type',
                 'payment_type',
+                'images',
                 'created_at',
                 'updated_at',
             ])
-            ->with(['location'])
+            ->with(['locations'])
             ->getListByFilter(filter:$filter)
             ->paginate($limit);
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
@@ -184,7 +196,7 @@ class PostController extends Controller
 
         return response()->json(['message' => 'Favorite Post deleted successfully.'], 200);
     }
-    public function delete(Request $request): JsonResponse
+    public function deletePost(Request $request): JsonResponse
     {
         $user = $request->user();
 
