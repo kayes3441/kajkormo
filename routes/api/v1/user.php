@@ -61,8 +61,7 @@ Route::group([  'prefix' => 'v1'], function () {
         Route::prefix('post')->controller(PostController::class)->group(function () {
             Route::get('list', 'getList');
             Route::post('add', 'add');
-
-            Route::patch('update', 'deletePost');
+            Route::patch('update', 'updatePost');
             Route::get('details', 'getDetails');
             Route::post('add-favorite', 'addFavorite');
             Route::get('favorite-post-list', 'getFavoritePostList');

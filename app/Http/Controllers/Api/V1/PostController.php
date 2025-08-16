@@ -76,6 +76,48 @@ class PostController extends Controller
         }
         return response()->json(['message' => 'Post Created successfully.'],200);
     }
+    public function updatePost(PostAddRequest $request, int $id): JsonResponse
+    {
+        $user = $request->user();
+
+        $post = $this->post->where('id', $id)->where('user_id', $user['id'])->first();
+
+        if (!$post) {
+            return response()->json(['message' => 'Post not found or unauthorized.'], 404);
+        }
+
+        $images = $post->images ?? [];
+
+        if ($request->hasFile('images')) {
+            $images = [];
+            foreach ($request->file('images') as $index=>$image) {
+                $oldImage = $images[$index] ?? null;
+                $path = $this->update(dir: 'post',oldImage:$oldImage,image: $image);
+                $images[] = $path;
+            }
+        }
+
+        $post->update([
+            'title'              => $request['title']       ?? $post->title,
+            'description'        => $request['description'] ?? $post->description,
+            'category_id'        => $request['category_id'] ?? $post->category_id,
+            'subcategory_id'     => $request['subcategory_id'] ?? $post->subcategory_id,
+            'sub_subcategory_id' => $request['sub_subcategory_id'] ?? $post->sub_subcategory_id,
+            'price'              => $request['price'] ?? $post->price,
+            'images'             => $images,
+            'work_type'          => $request['work_type']   ?? $post->work_type,
+            'payment_type'       => $request['payment_type'] ?? $post->payment_type,
+        ]);
+
+        if ($request->filled('location')) {
+            $post->locations()->sync([]);
+            foreach ($request->input('location', []) as $level => $locationId) {
+                $post->locations()->attach($locationId, ['level' => $level]);
+            }
+        }
+
+        return response()->json(['message' => 'Post updated successfully.'], 200);
+    }
 
     public function getAllList(Request $request):array
     {
