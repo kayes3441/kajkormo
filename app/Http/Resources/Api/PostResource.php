@@ -24,6 +24,7 @@ class PostResource extends JsonResource
             'payment_type'      => $this['payment_type'],
             'average_rating'      => $this['average_rating'],
             'review_count'      => $this['review_count'],
+            'images'      => $this['images'],
             'images_url'      => $this['images_url'],
             'locations' => $this->whenLoaded('locations'),
             'user'     => UserResource::make($this->whenLoaded('user')),

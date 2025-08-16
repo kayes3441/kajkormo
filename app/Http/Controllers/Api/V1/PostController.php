@@ -102,7 +102,7 @@ class PostController extends Controller
                 'updated_at',
             ])
             ->with(['locations','user'])
-            ->getListByFilter(filter:$filter) 
+            ->getListByFilter(filter:$filter)
             ->paginate($limit);
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
     }
