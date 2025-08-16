@@ -167,6 +167,23 @@ class PostController extends Controller
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
     }
 
+    public function removeFavorite(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $favoritePost = $this->favoritePost->where([
+            'id' => $request['id'],
+            'user_id' => $user['id'],
+        ])->first();
+
+        if (!$favoritePost) {
+            return response()->json(['message' => 'Favorite Post not found or unauthorized.'], 404);
+        }
+
+        $favoritePost->delete();
+
+        return response()->json(['message' => 'Favorite Post deleted successfully.'], 200);
+    }
     public function delete(Request $request): JsonResponse
     {
         $user = $request->user();

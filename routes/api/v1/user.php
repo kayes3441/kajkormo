@@ -67,6 +67,7 @@ Route::group([  'prefix' => 'v1'], function () {
             Route::get('details', 'getDetails');
             Route::post('add-favorite', 'addFavorite');
             Route::get('favorite-post-list', 'getFavoritePostList');
+            Route::delete('remove-favorite', 'removeFavorite');
             Route::delete('delete', 'delete');
         });
         Route::prefix('review-post')->controller(ReviewPostController::class)->group(function () {
