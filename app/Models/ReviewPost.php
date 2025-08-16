@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ReviewPost extends Model
 {
@@ -14,4 +15,8 @@ class ReviewPost extends Model
       'rating',
       'comment'
     ];
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class,'user_id')->select(['id', 'first_name', 'last_name', 'phone']);
+    }
 }

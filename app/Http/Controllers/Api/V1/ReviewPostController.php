@@ -19,13 +19,13 @@ class ReviewPostController extends Controller
     ){
 
     }
-    public function getList():array
+    public function getList(Request $request):array
     {
         $limit =    $request['limit']??10;
         $offset =    $request['offset']??1;
         $this->resolveOffsetPagination(offset: $request['offset']);
-        $reviews = $this->reviewPost->where(['post_id'=>$request['post_id']])->paginate($limit);
-        return $this->paginatedResponse(collection: $reviews, resourceClass: ReviewPostResource::class, limit: $limit,offset: $offset, key:'posts');
+        $reviews = $this->reviewPost->with(['user'])->where(['post_id'=>$request['post_id']])->paginate($limit);
+        return $this->paginatedResponse(collection: $reviews, resourceClass: ReviewPostResource::class, limit: $limit,offset: $offset, key:'reviews');
 
     }
     public function add(ReviewPostAddRequest $request):JsonResponse
