@@ -226,7 +226,7 @@ class PostController extends Controller
         $user = $request->user();
 
         $favoritePost = $this->favoritePost->where([
-            'id' => $request['id'],
+            'post_id' => $request['post_id'],
             'user_id' => $user['id'],
         ])->first();
 
@@ -241,12 +241,10 @@ class PostController extends Controller
     public function deletePost(Request $request): JsonResponse
     {
         $user = $request->user();
-
         $post = $this->post->where([
-            'id' => $request['id'],
+            'id' => $request['post_id'],
             'user_id' => $user['id'],
         ])->first();
-
         if (!$post) {
             return response()->json(['message' => 'Post not found or unauthorized.'], 404);
         }

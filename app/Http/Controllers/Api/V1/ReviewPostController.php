@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ReviewPostAddRequest;
+use App\Http\Requests\Api\ReviewPostUpdateRequest;
 use App\Http\Resources\Api\ReviewPostResource;
 use App\Models\ReviewPost;
 use App\Trait\PaginatesWithOffsetTrait;
@@ -38,7 +39,7 @@ class ReviewPostController extends Controller
         ]);
         return response()->json(['message' => 'Review added successfully.'],200);
     }
-    public function update(ReviewPostAddRequest $request): JsonResponse
+    public function update(ReviewPostUpdateRequest $request): JsonResponse
     {
         $user = $request->user();
 
