@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\Api\ReviewPostController;
 use App\Http\Controllers\Api\V1\Auth\ForgetPasswordController;
 use App\Http\Controllers\Api\V1\Auth\UserAPIAuthController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\LocationController;
 use App\Http\Controllers\Api\V1\PostController;
 use App\Http\Controllers\Api\V1\ProfileController;
+use App\Http\Controllers\Api\V1\ReviewPostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +46,7 @@ Route::group([  'prefix' => 'v1'], function () {
         });
     Route::prefix('post')->controller(PostController::class)->group(function () {
         Route::get('all-list', 'getAllList');
+        Route::get('details', 'getDetails');
     });
 
     Route::group(['middleware' => 'auth:api'], function () {
@@ -62,7 +63,7 @@ Route::group([  'prefix' => 'v1'], function () {
             Route::get('list', 'getList');
             Route::post('add', 'add');
             Route::patch('update', 'updatePost');
-            Route::get('details', 'getDetails');
+
             Route::post('add-favorite', 'addFavorite');
             Route::get('favorite-post-list', 'getFavoritePostList');
             Route::delete('remove-favorite', 'removeFavorite');

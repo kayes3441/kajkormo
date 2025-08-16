@@ -153,7 +153,7 @@ class PostController extends Controller
     {
         $post = $this->post
             ->with(['locations','user'])
-            ->where(['id'=> $request['[post_id']])
+            ->where(['id'=> $request['post_id']])
             ->select([
                 'id',
                 'user_id',
