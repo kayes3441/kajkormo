@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\Auth\ForgetPasswordController;
 use App\Http\Controllers\Api\V1\Auth\UserAPIAuthController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\ChatController;
 use App\Http\Controllers\Api\V1\LocationController;
 use App\Http\Controllers\Api\V1\PostController;
 use App\Http\Controllers\Api\V1\ProfileController;
@@ -79,5 +80,10 @@ Route::group([  'prefix' => 'v1'], function () {
             Route::delete('delete', 'delete');
         });
 
+        Route::prefix('chat')->controller(ChatController::class)->group(function () {
+            Route::get('list', 'getList');
+            Route::post('add', 'add');
+            Route::patch('read', 'read');
+        });
     });
 });
