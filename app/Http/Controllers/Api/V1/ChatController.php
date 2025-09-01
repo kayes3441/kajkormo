@@ -3,20 +3,28 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\ChatResource;
 use App\Models\Chat;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ChatController extends Controller
 {
     public function add(Request $request): JsonResponse
     {
-        $request->validate([
+        $validator = Validator::make($request->all(),[
             'receiver_id'   => 'required|exists:users,id',
-            'message'       => 'nullable|string',
-            'attachments.*' => 'nullable|file|max:5120', // 5MB each
+            'message'       => 'required|string',
         ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
+        $user = $request->user();
         $files = [];
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
@@ -25,50 +33,59 @@ class ChatController extends Controller
         }
 
         $chat = Chat::create([
-            'sender_id'   => auth()->id(),
-            'receiver_id' => $request->receiver_id,
-            'message'     => $request->message,
+            'sender_id'   => $user['id'],
+            'receiver_id' => $request['receiver_id'],
+            'message'     => $request['message'],
             'attachments' => $files,
         ]);
 
         return response()->json([
             'success' => true,
-            'data'    => $chat->load('sender:id,name', 'receiver:id,name'),
+            'data'    => $chat->load('sender:id,first_name,last_name', 'receiver:id,first_name,last_name'),
         ]);
     }
 
 
-    public function getList(Request $request):JsonResponse
+    public function getList(Request $request): JsonResponse
     {
-        $authId = auth()->id();
+        $user   = $request->user();
+        $authId = $user->id;
 
-        $conversations = Chat::where(function($q) use ($authId) {
+        $receiverId = $request->input('receiver_id');
+
+        $messages = Chat::with(['sender','receiver'])->where(function ($q) use ($authId, $receiverId) {
             $q->where('sender_id', $authId)
-                ->orWhere('receiver_id', $authId);
+                ->where('receiver_id', $receiverId);
         })
-            ->latest()
-            ->get()
-            ->groupBy(function($chat) use ($authId) {
-                return $chat->sender_id == $authId ? $chat->receiver_id : $chat->sender_id;
+            ->orWhere(function ($q) use ($authId, $receiverId) {
+                $q->where('sender_id', $receiverId)
+                    ->where('receiver_id', $authId);
             })
-            ->map(function($messages) {
-                return $messages->first();
-            })
-            ->values();
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
 
         return response()->json([
             'success' => true,
-            'data'    => $conversations,
+            'data'    => ChatResource::collection($messages),
         ]);
     }
+
     public function read(Request $request):JsonResponse
     {
-        $request->validate([
+
+        $validator = Validator::make($request->all(),[
             'sender_id' => 'required|exists:users,id',
         ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
+        $user = $request->user();
         Chat::where('sender_id', $request->sender_id)
-            ->where('receiver_id', auth()->id())
+            ->where('receiver_id', $user['id'])
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
 
