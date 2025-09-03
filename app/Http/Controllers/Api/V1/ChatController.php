@@ -52,7 +52,7 @@ class ChatController extends Controller
         $user   = $request->user();
         $authId = $user->id;
 
-        $conversations = Chat::where(function($q) use ($authId) {
+        $conversations = Chat::with(['sender','receiver'])->where(function($q) use ($authId) {
           return  $q->where('sender_id', $authId);
         })
             ->latest()
@@ -64,19 +64,16 @@ class ChatController extends Controller
                 return $messages->first();
             })
             ->values();
-
         return response()->json([
             'success' => true,
-            'data'    => $conversations->load('sender:id,first_name,last_name,image_url', 'receiver:id,first_name,last_name,image_url'),
+            'data'    => ChatResource::collection($conversations),
         ]);
     }
     public function getDetails(Request $request): array
     {
-
-        $parentID = $request['parent_id'];
         $limit =    $request['limit'] ?? 10;
         $offset =    $request['offset'] ?? 1;
-
+        $this->resolveOffsetPagination(offset: $request['offset']);
         $user   = $request->user();
         $authId = $user->id;
 
