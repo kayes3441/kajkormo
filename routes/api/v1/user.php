@@ -82,6 +82,7 @@ Route::group([  'prefix' => 'v1'], function () {
 
         Route::prefix('chat')->controller(ChatController::class)->group(function () {
             Route::get('list', 'getList');
+            Route::get('details', 'getDetails');
             Route::post('add', 'add');
             Route::patch('read', 'read');
         });

@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\ChatResource;
 use App\Models\Chat;
+use App\Trait\PaginatesWithOffsetTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ChatController extends Controller
 {
+    use PaginatesWithOffsetTrait;
     public function add(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(),[
@@ -45,9 +47,36 @@ class ChatController extends Controller
         ]);
     }
 
-
-    public function getList(Request $request): JsonResponse
+    public function getList(Request $request):JsonResponse
     {
+        $user   = $request->user();
+        $authId = $user->id;
+
+        $conversations = Chat::where(function($q) use ($authId) {
+          return  $q->where('sender_id', $authId);
+        })
+            ->latest()
+            ->get()
+            ->groupBy(function($chat) use ($authId) {
+                return $chat->sender_id == $authId;
+            })
+            ->map(function($messages) {
+                return $messages->first();
+            })
+            ->values();
+
+        return response()->json([
+            'success' => true,
+            'data'    => $conversations->load('sender:id,first_name,last_name,image_url', 'receiver:id,first_name,last_name,image_url'),
+        ]);
+    }
+    public function getDetails(Request $request): array
+    {
+
+        $parentID = $request['parent_id'];
+        $limit =    $request['limit'] ?? 10;
+        $offset =    $request['offset'] ?? 1;
+
         $user   = $request->user();
         $authId = $user->id;
 
@@ -62,12 +91,8 @@ class ChatController extends Controller
                     ->where('receiver_id', $authId);
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(20);
-
-        return response()->json([
-            'success' => true,
-            'data'    => ChatResource::collection($messages),
-        ]);
+            ->paginate($limit);
+        return $this->paginatedResponse(collection: $messages, resourceClass: ChatResource::class, limit: $limit,offset: $offset, key:'data');
     }
 
     public function read(Request $request):JsonResponse

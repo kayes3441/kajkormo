@@ -18,14 +18,13 @@ class LocationController extends Controller
         $limit =    $request['limit']??10;
         $offset =    $request['offset']??1;
         $this->resolveOffsetPagination(offset: $request['offset']);
-        $locations = Location::select(['id','name','parent_id'])
+        $locations = Location::select(['id','name','parent_id','level'])
             ->when(isset($params), function ($query) use ($params) {
                 return $query->where(['level' => $params]);
             })
             ->when(!is_null($parentID),function ($query) use ($parentID){
                 return $query->where(['parent_id'=>$parentID]);
             })->paginate($limit);;
-
         return $this->paginatedResponse(collection: $locations, resourceClass: LocationResource::class, limit: $limit,offset: $offset, key:$params??'locations');
     }
 }

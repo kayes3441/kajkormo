@@ -27,11 +27,13 @@ class ChatResource extends JsonResource
                 'id'   => $this->sender->id ?? null,
                 'first_name' => $this->sender->first_name ?? null,
                 'last_name' => $this->sender->last_name ?? null,
+                'image_url' => $this->sender->image_url ?? null,
             ],
             'receiver'   => [
                 'id'   => $this->receiver->id ?? null,
                 'first_name' => $this->receiver->first_name ?? null,
                 'last_name' => $this->receiver->last_name ?? null,
+                'image_url' => $this->receiver->image_url ?? null,
             ],
         ];
     }
