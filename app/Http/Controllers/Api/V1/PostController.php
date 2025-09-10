@@ -178,6 +178,11 @@ class PostController extends Controller
             return response()->json(['message' => $validate->errors()], 422);
         }
         $user = $request->user();
+        $checkFavoritePostExist = $this->favoritePost->where(['user_id' => $user->id, 'post_id' => $request['post_id']])->first();
+        if ($checkFavoritePostExist)
+        {
+            return response()->json(['message' => 'Post already favorited'], 422);
+        }
         $this->favoritePost->create([
             'post_id' => $request['post_id'],
             'user_id' => $user['id'],
@@ -196,14 +201,12 @@ class PostController extends Controller
             'subcategory_id' => $request['subcategory_id']??null,
             'sub_subcategory_id' => $request['sub_subcategory_id']??null,
             'location'=>$request['location']??null,
-            'userId'=> $userId,
         ];
         $posts = $this->post
-            ->whereHas('favoritePost', function ($query) use ($filter) {
-                return $query->where('user_id', $filter['userId']);
+            ->whereHas('favoritePost', function ($query) use ($userId) {
+                return $query->where('user_id', $userId);
             })
             ->select([
-
                 'id',
                 'user_id',
                 'title',
@@ -215,7 +218,7 @@ class PostController extends Controller
                 'created_at',
                 'updated_at',
             ])
-            ->with(['locations'])
+            ->with(['locations','favoritePost'])
             ->getListByFilter(filter:$filter)
             ->paginate($limit);
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
