@@ -36,6 +36,10 @@ class PostController extends Controller
         $posts = $this->post->select([
                 'id',
                 'title',
+                'user_id',
+                'category_id',
+                'subcategory_id',
+                'sub_subcategory_id',
                 'description',
                 'price',
                 'work_type',
@@ -44,7 +48,7 @@ class PostController extends Controller
                 'created_at',
                 'updated_at',
             ])
-            ->with(['locations'])
+            ->with(['locations','user','category','subcategory','subSubcategory'])
             ->getListByFilter(filter:$filter)->paginate($limit);
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
     }
@@ -137,13 +141,16 @@ class PostController extends Controller
                 'title',
                 'description',
                 'price',
+                'category_id',
+                'subcategory_id',
+                'sub_subcategory_id',
                 'work_type',
                 'payment_type',
                 'images',
                 'created_at',
                 'updated_at',
             ])
-            ->with(['locations','user'])
+            ->with(['locations','user','category','subcategory','subSubcategory'])
             ->getListByFilter(filter:$filter)
             ->paginate($limit);
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');
@@ -218,7 +225,7 @@ class PostController extends Controller
                 'created_at',
                 'updated_at',
             ])
-            ->with(['locations','favoritePost'])
+            ->with(['locations','favoritePost','user'])
             ->getListByFilter(filter:$filter)
             ->paginate($limit);
         return $this->paginatedResponse(collection: $posts, resourceClass: PostResource::class, limit: $limit,offset: $offset, key:'posts');

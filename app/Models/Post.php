@@ -108,4 +108,16 @@ class Post extends Model
     {
         return $this->reviews()->count();
     }
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class,'category_id')->select(['id', 'name','slug','level']);
+    }
+    public function subcategory(): BelongsTo
+    {
+        return $this->belongsTo(Category::class,'subcategory_id')->select(['id', 'name','slug','level']);
+    }
+    public function subSubcategory(): BelongsTo
+    {
+        return $this->belongsTo(Category::class,'sub_subcategory_id')->select(['id', 'name','slug','level']);
+    }
 }

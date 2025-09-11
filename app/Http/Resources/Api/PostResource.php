@@ -28,6 +28,9 @@ class PostResource extends JsonResource
             'images_url'      => $this['images_url'],
             'locations' => $this->whenLoaded('locations'),
             'user'     => UserResource::make($this->whenLoaded('user')),
+            'category'     => CategoryResource::make($this->whenLoaded('category')),
+            'subcategory'     => CategoryResource::make($this->whenLoaded('subcategory')),
+            'sub_subcategory'     => CategoryResource::make($this->whenLoaded('sub_subcategory')),
             'reviews' => $this->whenLoaded('reviews', function () {
                 return $this->reviews->isNotEmpty()
                     ? ReviewPostResource::collection($this->reviews)
