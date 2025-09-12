@@ -6,10 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
-use function App\Traits\cacheRemoveByType;
-use function App\Traits\getWebConfig;
-use function App\Traits\translate;
+
 
 trait FileManagerTrait
 {
@@ -19,7 +16,7 @@ trait FileManagerTrait
      * @param $image
      * @return string
      */
-    protected function upload(string $dir,  $image = null): string
+    protected function uploadFileOrImage(string $dir,  $image = null): string
     {
         $storage = config('filesystems.disks.default') ?? 'public';
         if (!is_null($image)) {
@@ -42,19 +39,19 @@ trait FileManagerTrait
      * @param string $fileType image/file
      * @return string
      */
-    public function update(string $dir, $oldImage, $image, string $fileType = 'image'): string
+    public function updateFileOrImage(string $dir, $oldImage, $image, string $fileType = 'image'): string
     {
         if ($this->checkFileExists(filePath: $dir . $oldImage)['status']) {
             Storage::disk($this->checkFileExists(filePath: $dir . $oldImage)['disk'])->delete($dir . $oldImage);
         }
-        return $this->upload($dir, $image);
+        return $this->uploadFileOrImage($dir, $image);
     }
 
     /**
      * @param string $filePath
      * @return array
      */
-    protected function  delete(string $filePath): array
+    protected function  deleteFileOrImage(string $filePath): array
     {
         if ($this->checkFileExists(filePath: $filePath)['status']) {
             Storage::disk($this->checkFileExists(filePath: $filePath)['disk'])->delete($filePath);
