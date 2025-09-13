@@ -11,8 +11,14 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class BannerResource extends Resource
@@ -20,7 +26,6 @@ class BannerResource extends Resource
     use FileManagerTrait;
     protected static ?string $model = Banner::class;
     protected static? string $navigationGroup = 'Promotion Management';
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -81,28 +86,42 @@ class BannerResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('title'),
+                TextColumn::make('type')->sortable()->searchable(),
+
+                ImageColumn::make('image')
+                    ->label('Banner Image')
+                    ->height(40)
+                    ->width(300),
+
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Action::make('toggleStatus')
+                    ->label(fn ($record) => $record->status ? 'Disable' : 'Enable')
+                    ->icon(fn ($record) => $record->status ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
+                    ->color(fn ($record) => $record->status ? 'danger' : 'success')
+                    ->action(fn ($record) => $record->update(['status' => !$record->status]))
+                    ->after(function ($record) {
+                        Notification::make()
+                            ->title('Status updated successfully!')
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation(),
+
+                EditAction::make(),
+                DeleteAction::make(),
             ]);
     }
-
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-
     public static function getPages(): array
     {
         return [
