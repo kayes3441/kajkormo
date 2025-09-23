@@ -46,6 +46,6 @@ if (!function_exists('getImageOrPlaceholder')) {
         if (isset($placeholderMap[$type])) {
             return is_file($locationPath) ? $givenPath : getAssetPath(path: 'public/assets/' . $placeholderMap[$type]);
         }
-        return is_file($locationPath) ? $givenPath : getStoragePath(path: 'public/assets/front-end/images/placeholder/placeholder-2-1.png');
+        return is_file($locationPath) ? $givenPath : getStoragePath(path: 'public/assets/assets/front-end/images/placeholder/placeholder-2-1.png');
     }
 }
