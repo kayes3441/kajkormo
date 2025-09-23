@@ -49,6 +49,7 @@ Route::group([  'prefix' => 'v1'], function () {
         Route::get('all-list', 'getAllList');
         Route::get('details', 'getDetails');
     });
+
     Route::prefix('review-post')->controller(ReviewPostController::class)->group(function () {
         Route::get('list', 'getList');
 

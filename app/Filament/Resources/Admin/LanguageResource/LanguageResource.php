@@ -10,10 +10,12 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 
 class LanguageResource extends Resource
@@ -36,9 +38,9 @@ class LanguageResource extends Resource
                         Select::make('code')
                             ->label('Country')
                             ->options(function () {
-                                return Country::select('flag','code')->active()->get()
+                                return Country::select('iso2')->active()->get()
                                     ->mapWithKeys(fn ($country) => [
-                                        $country->code => $country->code,
+                                        $country->iso2 => $country->iso2,
                                     ])->toArray();
                             })
                             ->searchable()
@@ -71,13 +73,38 @@ class LanguageResource extends Resource
                 TextColumn::make('id')->hidden(),
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('code'),
-                IconColumn::make('default_status')
-                    ->boolean()
-                    ->label('Default'),
+                ToggleColumn::make('status')
+                    ->label('Active')
+                    ->afterStateUpdated(function ($record, $state) {
+                        $record->update(['status' => $state]);
 
-                IconColumn::make('status')
-                    ->boolean()
-                    ->label('Active'),
+                        Notification::make()
+                            ->title('Status Updated')
+                            ->body('The active status was set to '.($state ? 'On' : 'Off'))
+                            ->success()
+                            ->send();
+                    }),
+
+                ToggleColumn::make('default_status')
+                    ->label('Default')
+                    ->afterStateUpdated(function ($record, $state) {
+                        if ($state) {
+                            // Turn off all other default_status first
+                            $record->newQuery()
+                                ->where('id', '!=', $record->id)
+                                ->update(['default_status' => 0]);
+                        }
+
+                        $record->update(['default_status' => $state]);
+
+                        Notification::make()
+                            ->title('Default Status Updated')
+                            ->body($state
+                                ? 'This record is now the default, all others were unset.'
+                                : 'This record is no longer the default.')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->filters([
                 //
