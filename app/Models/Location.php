@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Trait\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 use Illuminate\Support\Str;
 
 class Location extends Model
 {
+    use HasTranslations;
     protected $fillable = [
         'name',
         'slug',

@@ -7,8 +7,16 @@ use App\Filament\Resources\Admin\LocationResource\Pages\EditLocation;
 use App\Filament\Resources\Admin\LocationResource\Pages\ListLocations;
 use App\Filament\Resources\Admin\LocationResource\RelationManagers\ChildrenRelationManager;
 use App\Models\Country;
+use App\Models\Language;
 use App\Models\Location;
-use Filament\Forms\{Components\Grid, Components\Section, Components\Select, Components\TextInput, Get, Form};
+use Filament\Forms\{Components\Grid,
+    Components\Hidden,
+    Components\Repeater,
+    Components\Section,
+    Components\Select,
+    Components\TextInput,
+    Get,
+    Form};
 use Filament\Tables\{Actions\Action,
     Actions\DeleteAction,
     Actions\DeleteBulkAction,
@@ -36,6 +44,24 @@ class LocationResource extends Resource
             TextInput::make('name')
                 ->required()
                 ->maxLength(100),
+            Repeater::make('translations')
+                ->relationship()
+                ->schema([
+                    Hidden::make('key')->default('name'),
+                    Select::make('locale')
+                        ->options(fn () => Language::active()->withoutEN()->pluck('name', 'code')->toArray())
+                        ->reactive()
+                        ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                        ->required(),
+
+                    TextInput::make('value')
+                        ->label('Translation')
+                        ->required(),
+                ])
+                ->columns(2)
+                ->label('Translations')
+                ->addActionLabel('Add Translation')
+                ->maxItems(Language::active()->withoutEN()->count()),
             Select::make('country_code')
                 ->label('Country')
                 ->options(fn () => Country::query()
