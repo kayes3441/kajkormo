@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Trait\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 class Category extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes,HasTranslations;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -34,4 +35,8 @@ class Category extends Model
     {
         return $this->hasMany(self::class, 'parent_id');
     }
+//    public function translations(): MorphMany
+//    {
+//        return $this->morphMany('App\Models\Translation', 'translationable');
+//    }
 }
