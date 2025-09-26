@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('translations', function (Blueprint $table) {
             $table->id();
-            $table->morphs('translatable');
+            $table->uuidMorphs('translatable');
             $table->string('locale',8)->index();
             $table->string('key')->index();
             $table->text('value');

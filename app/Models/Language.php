@@ -15,6 +15,18 @@ class Language extends Model
     protected $casts = [
         'id' =>'string'
     ];
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+    public function scopeDefault($query)
+    {
+        return $query->where('default_status', 1);
+    }
+    public function scopeWithoutEN($query)
+    {
+        return $query->where('code','!=', 'EN');
+    }
     public static function boot():void
     {
         parent::boot();

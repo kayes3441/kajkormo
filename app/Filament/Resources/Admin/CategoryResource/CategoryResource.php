@@ -7,8 +7,11 @@ use App\Filament\Resources\Admin\CategoryResource\Pages\EditCategory;
 use App\Filament\Resources\Admin\CategoryResource\Pages\ListCategories;
 use App\Filament\Resources\Admin\LocationResource\RelationManagers\ChildrenRelationManager;
 use App\Models\Category;
+use App\Models\Language;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -40,6 +43,24 @@ class CategoryResource extends Resource
                         TextInput::make('name')
                             ->required()
                             ->maxLength(100),
+                        Repeater::make('translations')
+                            ->relationship()
+                            ->schema([
+                                Hidden::make('key')->default('name'),
+                                Select::make('locale')
+                                    ->options(fn () => Language::active()->withoutEN()->pluck('name', 'code')->toArray())
+                                    ->reactive()
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                    ->required(),
+
+                                TextInput::make('value')
+                                    ->label('Translation')
+                                    ->required(),
+                            ])
+                            ->columns(2)
+                            ->label('Translations')
+                            ->addActionLabel('Add Translation')
+                            ->maxItems(Language::active()->withoutEN()->count()),
 
                         Select::make('level')
                             ->required()
