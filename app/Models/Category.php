@@ -24,6 +24,9 @@ class Category extends Model
             $model->id = (string) Str::uuid();
             $model->slug = Str::slug($model->name);
         });
+        static::deleting(function ($category) {
+            $category->translations()->delete();
+        });
     }
 
     public function parent(): BelongsTo

@@ -36,15 +36,16 @@ class LanguageResource extends Resource
                     Grid::make(2)->schema([
                         TextInput::make('name')->required(),
                         Select::make('code')
-                            ->label('Country')
+                            ->label('Country Code')
                             ->options(function () {
                                 return Country::select('iso2')->active()->get()
                                     ->mapWithKeys(fn ($country) => [
-                                        $country->iso2 => $country->iso2,
+                                        $country->iso2 => strtolower($country->iso2),
                                     ])->toArray();
                             })
                             ->searchable()
-                            ->required(),
+                            ->required()
+                            ->unique(ignorable: fn ($record) => $record),
                         Select::make('direction')
                             ->options([
                                 'ltr' => 'Left to Right',

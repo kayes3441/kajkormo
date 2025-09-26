@@ -41,5 +41,8 @@ class Location extends Model
                 $model->slug = Str::slug($model->name . '-' . $model->level);
             }
         });
+        static::deleting(function ($category) {
+            $category->translations()->delete();
+        });
     }
 }
