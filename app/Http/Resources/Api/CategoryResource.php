@@ -16,7 +16,7 @@ class CategoryResource extends JsonResource
     {
         return [
             'id'   => $this['id'],
-            'name' => $this['name'],
+            'name' => $this->getDefaultName($request->header('lang')),
             'slug' => $this['slug'],
             'level' => $this['level']
         ];

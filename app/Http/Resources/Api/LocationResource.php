@@ -16,7 +16,7 @@ class LocationResource extends JsonResource
     {
         return [
             'id'   => $this['id'],
-            'name' => $this['name'],
+            'name' => $this->getDefaultName($request->header('lang')),
             'level' => $this['level'],
         ];
     }

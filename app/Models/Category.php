@@ -28,7 +28,15 @@ class Category extends Model
             $category->translations()->delete();
         });
     }
-
+    public function getDefaultName($locale = null)
+    {
+        $locale = $locale ?: app()->getLocale();
+        return $this->translations()
+            ->where('key', 'name')
+            ->where('locale', $locale)
+            ->value('value')
+            ?? $this->name;
+    }
     public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');

@@ -30,6 +30,15 @@ class Location extends Model
         return $this->hasMany(self::class, 'parent_id');
     }
     protected $hidden = ['pivot'];
+    public function getDefaultName($locale = null)
+    {
+        $locale = $locale ?: app()->getLocale();
+        return $this->translations()
+            ->where('key', 'name')
+            ->where('locale', $locale)
+            ->value('value')
+            ?? $this->name;
+    }
     protected static function booted(): void
     {
         static::creating(function ($model) {
