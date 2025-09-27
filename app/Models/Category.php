@@ -46,8 +46,4 @@ class Category extends Model
     {
         return $this->hasMany(self::class, 'parent_id');
     }
-//    public function translations(): MorphMany
-//    {
-//        return $this->morphMany('App\Models\Translation', 'translationable');
-//    }
 }

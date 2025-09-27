@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Builder;
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
+    protected static? string $navigationGroup = 'Promotion Management';
 
     protected static ?string $navigationIcon = 'heroicon-o-qr-code';
 
