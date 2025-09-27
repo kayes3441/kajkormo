@@ -95,6 +95,6 @@ class NotificationResource extends Resource
         return [
             'index' => Pages\ListNotifications::route('/'),
             'edit' => Pages\EditNotification::route('/{record}/edit'),
-        ];
+            'firebase' => Pages\ManageFirebaseConfig::route('/firebase'),        ];
     }
 }

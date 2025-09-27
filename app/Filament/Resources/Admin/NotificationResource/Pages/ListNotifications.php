@@ -16,7 +16,10 @@ class ListNotifications extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\Action::make('firebaseConfig')
+                ->label('Firebase Config')
+                ->icon('heroicon-o-cog')
+                ->url(route('filament.admin.resources.notification.firebase')),
         ];
     }
 }
