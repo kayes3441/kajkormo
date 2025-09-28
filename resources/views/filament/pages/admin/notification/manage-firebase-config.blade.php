@@ -6,7 +6,7 @@
             wire:click="submit"
             color="primary"
             size="md"
-            class="ml-auto"       
+            class="ml-auto"
         >
             Save
         </x-filament::button>
