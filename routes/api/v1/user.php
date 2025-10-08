@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Auth\ForgetPasswordController;
 use App\Http\Controllers\Api\V1\Auth\UserAPIAuthController;
+use App\Http\Controllers\Api\V1\BannerController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\ChatController;
 use App\Http\Controllers\Api\V1\LocationController;
@@ -54,6 +55,10 @@ Route::group([  'prefix' => 'v1'], function () {
         Route::get('list', 'getList');
 
     });
+    Route::prefix('banner')->controller(BannerController::class)->group(function () {
+        Route::get('list', 'getList');
+
+    });
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::prefix('profile')
@@ -88,4 +93,6 @@ Route::group([  'prefix' => 'v1'], function () {
             Route::patch('read', 'read');
         });
     });
+
+
 });

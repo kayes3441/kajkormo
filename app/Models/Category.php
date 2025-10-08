@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 class Category extends Model
 {
@@ -45,5 +46,14 @@ class Category extends Model
     public function children(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id');
+    }
+    protected $appends = ['image_url'];
+    public function getImageURLAttribute(): string|null
+    {
+        if (!$this['image']) {
+            return null;
+        }
+        $storage = config('filesystems.disks.default') ?? 'public';
+        return Storage::disk($storage)->url($this['image']);
     }
 }

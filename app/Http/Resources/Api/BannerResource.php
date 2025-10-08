@@ -5,7 +5,7 @@ namespace App\Http\Resources\Api;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryResource extends JsonResource
+class BannerResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,9 +16,10 @@ class CategoryResource extends JsonResource
     {
         return [
             'id'   => $this['id'],
-            'name' => $this->getDefaultName($request->header('lang')),
-            'slug' => $this['slug'],
-            'level' => $this['level'],
+            'title' => $this['title'],
+            'type' => $this['type'],
+            'url' => $this['url'],
+            'image' => $this['image'],
             'image_url' => $this['image_url'],
         ];
     }
