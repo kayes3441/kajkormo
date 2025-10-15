@@ -51,12 +51,10 @@ class CategoryResource extends Resource
                                 Select::make('locale')
                                     ->options(fn () => Language::active()->withoutEN()->pluck('name', 'code')->toArray())
                                     ->reactive()
-                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                    ->required(),
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
 
                                 TextInput::make('value')
-                                    ->label('Translation')
-                                    ->required(),
+                                    ->label('Translation'),
                             ])
                             ->columns(2)
                             ->label('Translations')
@@ -90,7 +88,6 @@ class CategoryResource extends Resource
                             ->searchable(),
 
                         FileUpload::make('icon')
-                            ->directory('category')
                             ->image()
                             ->imageEditor()
                             ->maxSize(2048)

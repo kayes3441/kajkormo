@@ -3,10 +3,12 @@
 namespace App\Filament\Resources\Admin\CategoryResource\Pages;
 
 use App\Filament\Resources\Admin\CategoryResource\CategoryResource;
+use App\Trait\FileManagerTrait;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateCategory extends CreateRecord
 {
+    use FileManagerTrait;
     protected static string $resource = CategoryResource::class;
     protected static bool $canCreateAnother = false;
     protected function getRedirectUrl(): string
@@ -17,4 +19,5 @@ class CreateCategory extends CreateRecord
     {
         return 'Category successfully created.';
     }
+
 }

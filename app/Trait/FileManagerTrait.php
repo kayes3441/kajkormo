@@ -3,8 +3,6 @@
 namespace App\Trait;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -16,7 +14,7 @@ trait FileManagerTrait
      * @param $image
      * @return string
      */
-    protected function uploadFileOrImage(string $dir,  $image = null): string
+    public function uploadFileOrImage(string $dir,  $image = null): string
     {
         $storage = config('filesystems.disks.default') ?? 'public';
         if (!is_null($image)) {

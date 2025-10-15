@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Trait\FileManagerTrait;
 use App\Trait\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 class Category extends Model
 {
-    use HasFactory, SoftDeletes,HasTranslations;
+    use HasFactory, SoftDeletes,HasTranslations,FileManagerTrait;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -47,13 +48,13 @@ class Category extends Model
     {
         return $this->hasMany(self::class, 'parent_id');
     }
-    protected $appends = ['image_url'];
+    protected $appends = ['icon_url'];
     public function getImageURLAttribute(): string|null
     {
-        if (!$this['image']) {
+        if (!$this['icon']) {
             return null;
         }
         $storage = config('filesystems.disks.default') ?? 'public';
-        return Storage::disk($storage)->url($this['image']);
+        return Storage::disk($storage)->url($this['icon']);
     }
 }
