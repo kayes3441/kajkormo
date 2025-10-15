@@ -19,7 +19,8 @@ class CategoryResource extends JsonResource
             'name' => $this->getDefaultName($request->header('lang')),
             'slug' => $this['slug'],
             'level' => $this['level'],
-            'image_url' => $this['image_url'],
+            'icon' => $this['icon'],
+            'icon_url' => $this['icon_url'],
         ];
     }
 }

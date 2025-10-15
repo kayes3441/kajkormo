@@ -28,17 +28,10 @@ class Banner extends Model
             return null;
         }
         $storage = config('filesystems.disks.default') ?? 'public';
-        return Storage::disk($storage)->url('banner'.$this['image']);
+        return Storage::disk($storage)->url($this['image']);
     }
     protected static function boot():void
     {
         parent::boot();
-        static::creating(function ($model) {
-            $model->image = self::uploadFileOrImage(dir:'banner',image: $model->image);
-        });
-        static::updating(function ($model) {
-            $oldImage = $model->getOriginal('image');
-            $model->image = self::updateFileOrImage(dir:'banner',oldImage:$oldImage ,image: $model->image);
-        });
     }
 }

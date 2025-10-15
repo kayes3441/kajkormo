@@ -49,7 +49,7 @@ class Category extends Model
         return $this->hasMany(self::class, 'parent_id');
     }
     protected $appends = ['icon_url'];
-    public function getImageURLAttribute(): string|null
+    public function getIconUrlAttribute(): string|null
     {
         if (!$this['icon']) {
             return null;

@@ -18,7 +18,7 @@ class CategoryController extends Controller
         $limit =    $request['limit'] ?? 10;
         $offset =    $request['offset'] ?? 1;
         $this->resolveOffsetPagination(offset: $request['offset']);
-        $categories = Category::select(['id','name','parent_id','slug','level'])
+        $categories = Category::select(['id','name','parent_id','slug','level','icon'])
             ->when(isset($params), function ($query) use ($params) {
                 return $query->where(['level' => $params]);
             })
