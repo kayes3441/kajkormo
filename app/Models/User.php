@@ -30,7 +30,8 @@ class User extends UserAuth
         'phone',
         'password',
         'phone_verified_at',
-        'address'
+        'address',
+        'app_language'
     ];
 
     /**

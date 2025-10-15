@@ -94,4 +94,43 @@ class ProfileController extends Controller
         }
         return response()->json(['message' => 'Location updated successfully.'],200);
     }
+
+    public function changeLanguage(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $validator = Validator::make($request->all(),[
+            'app_language'        => 'required|string',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $this->user->find($user['id'])->update([
+            'app_language' => $request['app_language'],
+        ]);
+        return response()->json(['message' => 'Location updated successfully.'],200);
+    }
+
+    public function delete(Request $request): JsonResponse
+    {
+        try {
+            $user = $request->user();
+
+            if (! $user) {
+                return response()->json(['message' => 'User not found.'], 404);
+            }
+
+            $user->forceDelete();
+
+            return response()->json(['message' => 'User deleted successfully.'], 200);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'message' => 'Failed to delete user.',
+                'error'   => $exception->getMessage(),
+            ], 500);
+        }
+    }
 }

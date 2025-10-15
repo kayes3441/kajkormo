@@ -68,6 +68,7 @@ Route::group([  'prefix' => 'v1'], function () {
                 Route::patch('update-info', 'updateInfo');
                 Route::patch('update-password', 'updatePassword');
                 Route::patch('update-location', 'updateLocation');
+                Route::patch('change-language', 'changeLanguage');
 
             });
         Route::prefix('post')->controller(PostController::class)->group(function () {
