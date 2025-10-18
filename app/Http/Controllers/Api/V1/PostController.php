@@ -58,7 +58,7 @@ class PostController extends Controller
         $images = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $path = $this->upload(dir:'post',image: $image);
+                $path = $this->uploadFileOrImage(dir:'post',image: $image);
                 $images[] = $path;
             }
         }
@@ -96,7 +96,7 @@ class PostController extends Controller
             $images = [];
             foreach ($request->file('images') as $index=>$image) {
                 $oldImage = $images[$index] ?? null;
-                $path = $this->update(dir: 'post',oldImage:$oldImage,image: $image);
+                $path = $this->updateFileOrImage(dir: 'post',oldImage:$oldImage,image: $image);
                 $images[] = $path;
             }
         }
