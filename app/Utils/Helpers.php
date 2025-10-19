@@ -14,17 +14,8 @@ class Helpers
         } elseif (session()->has('local')) {
             $lang = session('local');
         } else {
-//            $data = 'en';
             $code = 'en';
             $direction = 'ltr';
-//            foreach ($data as $ln) {
-//                if (array_key_exists('default', $ln) && $ln['default']) {
-//                    $code = $ln['code'];
-//                    if (array_key_exists('direction', $ln)) {
-//                        $direction = $ln['direction'];
-//                    }
-//                }
-//            }
             session()->put('local', $code);
             Session::put('direction', $direction);
             $lang = $code;
