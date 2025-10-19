@@ -31,7 +31,8 @@ class User extends UserAuth
         'password',
         'phone_verified_at',
         'address',
-        'app_language'
+        'app_language',
+        'device_token'
     ];
 
     /**

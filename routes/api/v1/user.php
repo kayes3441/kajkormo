@@ -22,8 +22,10 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:api');
 
 Route::group([  'prefix' => 'v1'], function () {
-    Route::prefix(prefix:'config')->controller(ConfigureController::class)->group(function (){
-        Route::get(uri:'list',action: 'getList');
+    Route::group(['prefix' => 'config',], function () {
+        Route::controller( ConfigureController::class)->group(function () {
+            Route::get('list', 'getList');
+        });
     });
     Route::group(['prefix' => 'auth',], function () {
         Route::controller( UserAPIAuthController::class)->group(function () {
@@ -71,6 +73,7 @@ Route::group([  'prefix' => 'v1'], function () {
                 Route::patch('update-password', 'updatePassword');
                 Route::patch('update-location', 'updateLocation');
                 Route::patch('change-language', 'changeLanguage');
+                Route::patch('update-device-token', 'updateDeviceToken');
                 Route::delete('delete', 'delete');
 
             });

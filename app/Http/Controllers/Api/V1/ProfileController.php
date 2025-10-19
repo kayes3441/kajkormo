@@ -133,4 +133,22 @@ class ProfileController extends Controller
             ], 500);
         }
     }
+    public function updateDeviceToken(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $validator = Validator::make($request->all(),[
+            'device_token'        => 'required|string',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $this->user->find($user['id'])->update([
+            'device_token' => $request['device_token'],
+        ]);
+        return response()->json(['message' => 'Device Token updated successfully.'],200);
+    }
 }

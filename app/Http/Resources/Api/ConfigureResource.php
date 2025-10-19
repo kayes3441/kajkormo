@@ -14,8 +14,14 @@ class ConfigureResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $value = $this['value'];
+        if (in_array($this['key'], ['web_fav_icon', 'app_header_logo']) && $this['value']) {
+            $value = asset('storage/' . $this['value']);
+        }
 
+        return [
+            'key'   => $this['key'],
+            'value' => $value,
         ];
     }
 }
