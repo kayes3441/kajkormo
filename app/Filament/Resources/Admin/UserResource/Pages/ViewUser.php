@@ -14,7 +14,6 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\Group;
-use Filament\Infolists\Components\IconEntry;
 class ViewUser extends ViewRecord
 {
     protected static string $resource =  UserResource::class;
@@ -48,8 +47,6 @@ class ViewUser extends ViewRecord
                                 ->alignCenter(),
                         ])->columnSpanFull(),
                     ]),
-
-                // 🪪 Identification Details
                 Section::make('Identification Information')
                     ->schema([
                         Grid::make(2)->schema([
@@ -123,12 +120,16 @@ class ViewUser extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('changeStatus')
-                ->label('Change Status')
+            Action::make('status')
+                ->label('Update Status')
+                ->icon('heroicon-o-wrench')
                 ->action(function ($record, array $data) {
                     $record->status = $data['status'];
                     $record->save();
-//                    $this->notify('success', 'Status updated!');
+                    Notification::make()
+                        ->title('User status updated!')
+                        ->success()
+                        ->send();
                 })
                 ->form([
                     Select::make('status')
