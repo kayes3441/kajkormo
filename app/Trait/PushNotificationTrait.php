@@ -23,7 +23,7 @@ trait PushNotificationTrait
         }
         return $data;
     }
-    
+
     /**
      * push notification variable message
      * @param string $key
