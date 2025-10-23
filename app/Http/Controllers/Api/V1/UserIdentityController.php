@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\UserIdentityResource;
 use App\Models\UserIdentity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -53,8 +54,12 @@ class UserIdentityController extends Controller
         );
 
         return response()->json([
-            'message' => $inserted ? 'User identity saved successfully.' : 'Failed to save user identity.',
-            'data' => UserIdentity::where(['user_id'=>$user['id']])->first(),
+            'message' => $inserted
+                ? 'User identity saved successfully.'
+                : 'Failed to save user identity.',
+            'data' => new UserIdentityResource(
+                UserIdentity::where('user_id', $user['id'])->first()
+            ),
         ]);
     }
 
