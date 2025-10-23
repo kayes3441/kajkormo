@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Admin\PostResource\Pages;
 use App\Filament\Resources\Admin\PostResource\PostResource;
 use Filament\Notifications\Notification;
-use Filament\Resources\Pages\ViewRecord; 
+use Filament\Resources\Pages\ViewRecord;
 use Filament\Infolists;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;

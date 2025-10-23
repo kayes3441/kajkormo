@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\LocationController;
 use App\Http\Controllers\Api\V1\PostController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\ReviewPostController;
+use App\Http\Controllers\Api\V1\UserIdentityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -85,6 +86,9 @@ Route::group([  'prefix' => 'v1'], function () {
             Route::get('favorite-post-list', 'getFavoritePostList');
             Route::delete('remove-favorite', 'removeFavorite');
             Route::delete('delete', 'deletePost');
+        });
+        Route::prefix('user-identity')->controller(UserIdentityController::class)->group(function () {
+            Route::post('update', 'update');
         });
         Route::prefix('review-post')->controller(ReviewPostController::class)->group(function () {
             Route::post('add', 'add');
