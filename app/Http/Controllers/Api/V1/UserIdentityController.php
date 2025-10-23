@@ -12,6 +12,28 @@ use Illuminate\Support\Facades\Validator;
 
 class UserIdentityController extends Controller
 {
+    public function getIdentity(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $userId = $request->user_id ?? $user?->id;
+
+        if (!$userId) {
+            return response()->json(['message' => 'User ID is required.'], 400);
+        }
+
+        $identity = UserIdentity::where(['user_id'=> $userId])->first();
+
+        if (!$identity) {
+            return response()->json(['message' => 'No identity found for this user.'], 404);
+        }
+
+        return response()->json([
+            'message' => 'User identity retrieved successfully.',
+            'data' => new UserIdentityResource($identity),
+        ]);
+    }
+
+
     public function update(Request $request):JsonResponse
     {
         $validator = Validator::make($request->all(),[

@@ -88,6 +88,7 @@ Route::group([  'prefix' => 'v1'], function () {
             Route::delete('delete', 'deletePost');
         });
         Route::prefix('user-identity')->controller(UserIdentityController::class)->group(function () {
+            Route::get('get-identity', 'getIdentity');
             Route::post('update', 'update');
         });
         Route::prefix('review-post')->controller(ReviewPostController::class)->group(function () {
