@@ -9,13 +9,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class UserIdentityController extends Controller
 {
     public function getIdentity(Request $request): JsonResponse
     {
         $user = $request->user();
-        $userId = $request->user_id ?? $user?->id;
+        $userId = $user?->id;
 
         if (!$userId) {
             return response()->json(['message' => 'User ID is required.'], 400);
@@ -32,15 +33,12 @@ class UserIdentityController extends Controller
             'data' => new UserIdentityResource($identity),
         ]);
     }
-
-
     public function update(Request $request):JsonResponse
     {
         $validator = Validator::make($request->all(),[
-            'user_id' => 'required|exists:users,id',
             'identity_type' => 'required|in:nid,passport,driving_license',
-            'front_image' => 'nullable|image|max:2048',
-            'back_image' => 'nullable|image|max:2048',
+            'front_image' => 'nullable|image',
+            'back_image' => 'nullable|image',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -67,6 +65,7 @@ class UserIdentityController extends Controller
         $inserted = DB::table('user_identities')->updateOrInsert(
             ['user_id' => $user['id']],
             [
+                'id' => Str::uuid(),
                 'identity_type' => $request['identity_type'],
                 'images' => json_encode($images),
                 'status' => 'pending',

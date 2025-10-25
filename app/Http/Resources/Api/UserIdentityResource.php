@@ -26,7 +26,7 @@ class UserIdentityResource extends JsonResource
             'updated_at' => $this['updated_at']?->format('Y-m-d H:i:s'),
             'user' => [
                 'id' => $this['user']?->id,
-                'name' => $this['user']?->name,
+                'name' => $this['user']?->first_name.' '.$this['user']?->last_name,
                 'email' => $this['user']?->email,
             ],
         ];
