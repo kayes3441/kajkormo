@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\ChattingEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\ChatResource;
 use App\Models\Chat;
+use App\Models\User;
 use App\Trait\PaginatesWithOffsetTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -40,7 +42,8 @@ class ChatController extends Controller
             'message'     => $request['message'],
             'attachments' => $files,
         ]);
-
+        $receiverData = User::find($request['receiver_id']);
+        event(new ChattingEvent(key: 'message_from_admin', type: 'user', receiverData: $receiverData, messageForm: $user));
         return response()->json([
             'success' => true,
             'data'    => $chat->load('sender:id,first_name,last_name', 'receiver:id,first_name,last_name'),

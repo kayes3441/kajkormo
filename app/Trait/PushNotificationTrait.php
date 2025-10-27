@@ -10,8 +10,6 @@ use function App\Utils\getConfigurationData;
 
 trait PushNotificationTrait
 {
-
-
     /**
      * push notification variable message format
      */
@@ -181,16 +179,16 @@ trait PushNotificationTrait
     /**
      * chatting related push notification
      * @param string $key
-     * @param object $userData
+     * @param object $receiverData
      * @param object $messageForm
      * @return void
      */
-    protected function chattingNotification(string $key,  object $userData, object $messageForm): void
+    protected function chattingNotification(string $key,  object $receiverData, object $messageForm): void
     {
         try {
-            $deviceToken =  $userData?->device_token;
+            $deviceToken =  $receiverData?->device_token;
             if ($deviceToken) {
-                $lang = $userData?->app_language ?? Helpers::getDefaultLang();
+                $lang = $receiverData?->app_language ?? Helpers::getDefaultLang();
                 $value = $this->pushNotificationMessage($key, $lang);
                 if ($value) {
                     $value = $this->textVariableDataFormat(
@@ -254,7 +252,5 @@ trait PushNotificationTrait
         ];
         return $this->sendNotificationToHttp($postData);
     }
-
-
 
 }

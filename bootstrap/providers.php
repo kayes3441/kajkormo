@@ -5,4 +5,5 @@ return [
     App\Providers\Filament\AdminPanelProvider::class,
     App\Providers\RouteServiceProvider::class,
     App\Providers\AuthServiceProvider::class,
+    App\Providers\EventServiceProvider::class,
 ];
