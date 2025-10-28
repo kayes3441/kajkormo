@@ -49,7 +49,7 @@ class ProfileController extends Controller
             'first_name' => $request['first_name'],
             'last_name' => $request['last_name'],
             'email' => $request['email'],
-            'image' => $this->update(dir: 'profile',oldImage: $user['image'],image: $request['image']),
+            'image' => $this->updateFileOrImage(dir: 'profile',oldImage: $user['image'],image: $request['image']),
         ]);
         return response()->json(['message' => 'Profile updated successfully.'],200);
     }

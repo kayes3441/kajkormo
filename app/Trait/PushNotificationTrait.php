@@ -95,14 +95,13 @@ trait PushNotificationTrait
         return $this->sendNotificationToHttp($postData);
     }
 
-
     /**
      * Device wise notification send
      * @param array|object $data
      * @param string $topic
      * @return bool|string
      */
-    protected function sendPushNotificationToTopic(array|object $data, string $topic = 'sixvalley'): bool|string
+    protected function sendPushNotificationToTopic(array|object $data, string $topic = 'loklagbe_topic'): bool|string
     {
         $postData = [
             'message' => [
@@ -135,14 +134,16 @@ trait PushNotificationTrait
     {
         try {
             $key = (array) getConfigurationData(name:'firebase_config');
+            $key = json_decode($key[0], true);
             if (isset($key['project_id'])) {
                 $url = 'https://fcm.googleapis.com/v1/projects/' . $key['project_id'] . '/messages:send';
                 $headers = [
                     'Authorization' => 'Bearer ' . $this->getAccessToken($key),
                     'Content-Type' => 'application/json',
                 ];
+                return Http::withHeaders($headers)->post($url, $data);
             }
-            return Http::withHeaders($headers)->post($url, $data);
+           return null;
         } catch (\Exception $exception) {
             return false;
         }
