@@ -55,17 +55,20 @@ class ChatController extends Controller
         $user   = $request->user();
         $authId = $user->id;
 
-        $conversations = Chat::with(['sender','receiver'])->where(function($q) use ($authId) {
-          return  $q->where('sender_id', $authId);
-        })
-            ->latest()
+        $conversations = Chat::with(['sender', 'receiver'])
+            ->where(function ($q) use ($authId) {
+                $q->where('sender_id', $authId)
+                    ->orWhere('receiver_id', $authId);
+            })
+            ->orderByDesc('id')
             ->get()
-            ->groupBy(function($chat) use ($authId) {
-                return $chat->sender_id == $authId;
+            ->groupBy(function ($chat) use ($authId) {
+                return $chat->sender_id == $authId ? $chat->receiver_id : $chat->sender_id;
             })
-            ->map(function($messages) {
-                return $messages->first();
+            ->map(function ($messages) {
+                return $messages->sortByDesc('created_at')->first();
             })
+            ->sortByDesc('created_at')
             ->values();
         return response()->json([
             'success' => true,
