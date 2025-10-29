@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\ChattingEvent;
+use App\Events\PostVerification;
 use App\Listeners\ChattingListener;
+use App\Listeners\SendPostVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -17,6 +19,9 @@ class EventServiceProvider extends ServiceProvider
         ChattingEvent::class => [
             ChattingListener::class,
         ],
+        PostVerification::class=>[
+            SendPostVerificationNotification::class,
+        ]
     ];
 
     /**

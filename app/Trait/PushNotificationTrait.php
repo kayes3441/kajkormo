@@ -68,11 +68,6 @@ trait PushNotificationTrait
                     'title' => (string)$data['title'],
                     'body' => (string)$data['description'],
                     'image' => $data['image'],
-                    'order_id' => (string)($data['order_id'] ?? ''),
-                    'order_details_id' => (string)($data['order_details_id'] ?? ''),
-                    'refund_id' => (string)($data['refund_id'] ?? ''),
-                    'deliveryman_charge' => (string)($data['deliveryman_charge'] ?? ''),
-                    'expected_delivery_date' => (string)($data['expected_delivery_date'] ?? ''),
                     'type' => (string)$data['type'],
                     'is_read' => '0',
                     'message_key' => (string)($data['message_key'] ?? ''),
@@ -110,7 +105,6 @@ trait PushNotificationTrait
                     'title' => (string)($data['title'] ?? ''),
                     'body' => (string)($data['description'] ?? ''),
                     'image' => $data['image'] ?? '',
-                    'order_id' => (string)($data['order_id'] ?? ''),
                     'type' => (string)($data['type'] ?? ''),
                     'is_read' => '0'
                 ],
@@ -202,6 +196,31 @@ trait PushNotificationTrait
                         'description' => $value,
                         'image' => '',
                         'type' => 'chatting',
+                        'message_key' => $key,
+                        'notification_key' => $key,
+                        'notification_from' => 'User',
+                    ];
+                    $this->sendChattingPushNotificationToDevice($deviceToken, $data);
+                }
+            }
+        } catch (\Exception $exception) {
+
+        }
+
+    }
+    protected function postVerificationNotification(string $key,  object $userData): void
+    {
+        try {
+            $deviceToken =  $userData?->device_token;
+            if ($deviceToken) {
+                $lang = $userData?->app_language ?? Helpers::getDefaultLang();
+                $value = $this->pushNotificationMessage($key, $lang);
+                if ($value) {
+                    $data = [
+                        'title' => 'Message',
+                        'description' => $value,
+                        'image' => '',
+                        'type' => 'post verification',
                         'message_key' => $key,
                         'notification_key' => $key,
                         'notification_from' => 'User',

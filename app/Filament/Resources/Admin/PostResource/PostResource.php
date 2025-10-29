@@ -54,7 +54,7 @@ class PostResource extends Resource
                         default => 'Pending',
                     }),
                 TextColumn::make('price')->money('BDT')->sortable(),
-//                TextColumn::make('published_at')->dateTime('M d, Y')->label('Published'),
+                TextColumn::make('published_at')->dateTime('M d, Y')->label('Published'),
             ])
             ->filters([])
             ->actions([
