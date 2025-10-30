@@ -32,15 +32,7 @@ class NotificationMessagesSeeder extends Seeder
                 'created_at'=> now(),
                 'updated_at'=> now(),
             ],
-            [
-                'id'        => Str::uuid(),
-                'user_type' => 'user',
-                'key'       => 'new_service_added',
-                'message'   => 'A new service has been added. Check it out!',
-                'status'    => true,
-                'created_at'=> now(),
-                'updated_at'=> now(),
-            ],
+
         ];
 
         DB::table('notification_messages')->insert($data);

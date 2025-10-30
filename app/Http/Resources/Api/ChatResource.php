@@ -17,23 +17,23 @@ class ChatResource extends JsonResource
         $authId = $request->user()->id;
 
         return [
-            'id'         => $this->id,
-            'message'    => $this->message,
-            'sender_id'  => $this->sender_id,
-            'receiver_id'=> $this->receiver_id,
-            'type'       => $this->sender_id == $authId ? 'sent' : 'received',
-            'created_at' => $this->created_at->toDateTimeString(),
+            'id'         => $this['id'],
+            'message'    => $this['message'],
+            'sender_id'  => $this['sender_id'],
+            'receiver_id'=> $this['receiver_id'],
+            'type'       => $this['sender_id'] == $authId ? 'sent' : 'received',
+            'created_at' => $this['created_at']->toDateTimeString(),
             'sender'     => [
                 'id'   => $this->sender->id ?? null,
-                'first_name' => $this->sender->first_name ?? null,
-                'last_name' => $this->sender->last_name ?? null,
-                'image_url' => $this->sender->image_url ?? null,
+                'first_name' => $this?->sender->first_name ?? null,
+                'last_name' => $this?->sender->last_name ?? null,
+                'image_url' => $this?->sender->image_url ?? null,
             ],
             'receiver'   => [
-                'id'   => $this->receiver->id ?? null,
-                'first_name' => $this->receiver->first_name ?? null,
-                'last_name' => $this->receiver->last_name ?? null,
-                'image_url' => $this->receiver->image_url ?? null,
+                'id'   => $this?->receiver->id ?? null,
+                'first_name' => $this?->receiver->first_name ?? null,
+                'last_name' => $this?->receiver->last_name ?? null,
+                'image_url' => $this?->receiver->image_url ?? null,
             ],
         ];
     }

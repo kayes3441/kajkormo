@@ -24,7 +24,7 @@ class LocationController extends Controller
             })
             ->when(!is_null($parentID),function ($query) use ($parentID){
                 return $query->where(['parent_id'=>$parentID]);
-            })->paginate($limit);;
+            })->paginate($limit);
         return $this->paginatedResponse(collection: $locations, resourceClass: LocationResource::class, limit: $limit,offset: $offset, key:$params??'locations');
     }
 }

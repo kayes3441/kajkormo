@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\ChatController;
 use App\Http\Controllers\Api\V1\ConfigureController;
 use App\Http\Controllers\Api\V1\LocationController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PostController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\ReviewPostController;
@@ -102,6 +103,11 @@ Route::group([  'prefix' => 'v1'], function () {
             Route::get('details', 'getDetails');
             Route::post('add', 'add');
             Route::patch('read', 'read');
+        });
+
+        Route::prefix('notification')->controller(NotificationController::class)->group(function () {
+            Route::get('list', 'getList');
+            Route::post('bulk-action', 'bulkAction');
         });
     });
 });

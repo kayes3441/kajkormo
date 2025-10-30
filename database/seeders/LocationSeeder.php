@@ -18,7 +18,6 @@ class LocationSeeder extends Seeder
             $translations = $this->getTranslations();
 
             foreach ($locations as $divisionName => $districts) {
-                // Division
                 $divisionSlug = $this->makeSlug($divisionName);
 
                 DB::table('locations')->updateOrInsert(
@@ -60,7 +59,6 @@ class LocationSeeder extends Seeder
                     $this->addTranslationIfExists($districtId, $districtName, $translations);
 
                     foreach ($upazilas as $upazilaName) {
-                        // Sub-district slug uses division + district + upazila (guarantees uniqueness)
                         $subSlug = $this->makeSlug($divisionName . ' ' . $districtName . ' ' . $upazilaName);
 
                         DB::table('locations')->updateOrInsert(
@@ -87,7 +85,6 @@ class LocationSeeder extends Seeder
 
     private function makeSlug(string $name): string
     {
-        // normalize to ascii-friendly slug
         return Str::slug($name, '-');
     }
 
@@ -114,9 +111,7 @@ class LocationSeeder extends Seeder
     {
         return [
 
-            // -----------------------
-            // Chattogram Division
-            // -----------------------
+
             'Chattogram Division' => [
                 'Cumilla' => [
                     'Debidwar','Barura','Brahmanpara','Chandina','Chauddagram','Daudkandi','Homna','Laksam','Muradnagar','Nangalkot','Sadar','Meghna','Monohargonj','Sadarsouth','Titas','Burichang','Lalmai'
@@ -237,7 +232,6 @@ class LocationSeeder extends Seeder
 
     private function getTranslations(): array
     {
-        // Translations from the Bangla block you supplied. Add more key=>value pairs if you want full coverage.
         return [
             // Divisions
             'Chattogram Division' => 'চট্টগ্রাম বিভাগ',
@@ -249,7 +243,7 @@ class LocationSeeder extends Seeder
             'Rangpur Division' => 'রংপুর বিভাগ',
             'Mymensingh Division' => 'ময়মনসিংহ বিভাগ',
 
-            // Selected districts and obvious matches (expand as needed)
+            // Chattogram Districts
             'Cumilla' => 'কুমিল্লা',
             'Feni' => 'ফেনী',
             'Brahmanbaria' => 'ব্রাহ্মণবাড়িয়া',
@@ -262,87 +256,154 @@ class LocationSeeder extends Seeder
             'Khagrachhari' => 'খাগড়াছড়ি',
             'Bandarban' => 'বান্দরবান',
 
-            'Sirajganj' => 'সিরাজগঞ্জ',
-            'Pabna' => 'পাবনা',
-            'Bogura' => 'বগুড়া',
-            'Rajshahi' => 'রাজশাহী',
-            'Natore' => 'নাটোর',
-            'Joypurhat' => 'জয়পুরহাট',
-            'Chapainawabganj' => 'চাঁপাইনবাবগঞ্জ',
-            'Naogaon' => 'নওগাঁ',
-
-            'Jashore' => 'যশোর',
-            'Satkhira' => 'সাতক্ষীরা',
-            'Meherpur' => 'মেহেরপুর',
-            'Narail' => 'নড়াইল',
-            'Chuadanga' => 'চুয়াডাঙ্গা',
-            'Kushtia' => 'কুষ্টিয়া',
-            'Magura' => 'মাগুরা',
-            'Khulna' => 'খুলনা',
-            'Bagerhat' => 'বাগেরহাট',
-            'Jhenaidah' => 'ঝিনাইদহ',
-
-            'Jhalakathi' => 'ঝালকাঠি',
-            'Patuakhali' => 'পটুয়াখালী',
-            'Pirojpur' => 'পিরোজপুর',
-            'Barishal' => 'বরিশাল',
-            'Bhola' => 'ভোলা',
-            'Barguna' => 'বরগুনা',
-
-            'Sylhet' => 'সিলেট',
-            'Moulvibazar' => 'মৌলভীবাজার',
-            'Habiganj' => 'হবিগঞ্জ',
-            'Sunamganj' => 'সুনামগঞ্জ',
-
-            'Narsingdi' => 'নরসিংদী',
-            'Gazipur' => 'গাজীপুর',
-            'Shariatpur' => 'শরীয়তপুর',
-            'Narayanganj' => 'নারায়ণগঞ্জ',
-            'Tangail' => 'টাঙ্গাইল',
-            'Kishoreganj' => 'কিশোরগঞ্জ',
-            'Manikganj' => 'মানিকগঞ্জ',
-            'Dhaka' => 'ঢাকা',
-            'Munshiganj' => 'মুন্সিগঞ্জ',
-            'Rajbari' => 'রাজবাড়ী',
-            'Madaripur' => 'মাদারীপুর',
-            'Gopalganj' => 'গোপালগঞ্জ',
-            'Faridpur' => 'ফরিদপুর',
-
-            'Panchagarh' => 'পঞ্চগড়',
-            'Dinajpur' => 'দিনাজপুর',
-            'Lalmonirhat' => 'লালমনিরহাট',
-            'Nilphamari' => 'নীলফামারী',
-            'Gaibandha' => 'গাইবান্ধা',
-            'Thakurgaon' => 'ঠাকুরগাঁও',
-            'Rangpur' => 'রংপুর',
-            'Kurigram' => 'কুড়িগ্রাম',
-
-            'Sherpur' => 'শেরপুর',
-            'Mymensingh' => 'ময়মনসিংহ',
-            'Jamalpur' => 'জামালপুর',
-            'Netrokona' => 'নেত্রকোণা',
-
-            // Generic common names (so translations for 'Sadar' etc. will be used)
-            'Sadar' => 'সদর',
+            // Cumilla Upazilas
+            'Debidwar' => 'দেবিদ্বার',
+            'Barura' => 'বরুড়া',
+            'Brahmanpara' => 'ব্রাহ্মণপাড়া',
+            'Chandina' => 'চান্দিনা',
+            'Chauddagram' => 'চৌদ্দগ্রাম',
+            'Daudkandi' => 'দাউদকান্দি',
+            'Homna' => 'হোমনা',
+            'Laksam' => 'লাকসাম',
+            'Muradnagar' => 'মুরাদনগর',
+            'Nangalkot' => 'নাঙ্গলকোট',
+            'Meghna' => 'মেঘনা',
+            'Monohargonj' => 'মনোহরগঞ্জ',
             'Sadar South' => 'সদর দক্ষিণ',
-            'Natoresadar' => 'নাটোর সদর',
-            'Pabnasadar' => 'পাবনা সদর',
-            'Barishalsadar' => 'বরিশাল সদর',
-            'Moulvibazarsadar' => 'মৌলভীবাজার সদর',
-            'Joypurhatsadar' => 'জয়পুরহাট সদর',
-            'Naogaonsadar' => 'নওগাঁ সদর',
-            'Kushtiasadar' => 'কুষ্টিয়া সদর',
-            'Satkhirasadar' => 'সাতক্ষীরা সদর',
-            'Patuakhali Sadar' => 'পটুয়াখালী সদর',
-            'Bhola Sadar' => 'ভোলা সদর',
-            'Narayanganjsadar' => 'নারায়ণগঞ্জ সদর',
-            'Tangailsadar' => 'টাঙ্গাইল সদর',
-            'Dinajpursadar' => 'দিনাজপুর সদর',
-            'Rangpursadar' => 'রংপুর সদর',
-            'Kurigramsadar' => 'কুড়িগ্রাম সদর',
-            'Sherpursadar' => 'শেরপুর সদর',
-            'Mymensinghsadar' => 'ময়মনসিংহ সদর',
-            'Netrokonasadar' => 'নেত্রকোণা সদর',
+            'Titas' => 'তিতাস',
+            'Burichang' => 'বুড়িচং',
+            'Lalmai' => 'লালমাই',
+
+            // Feni Upazilas
+            'Chhagalnaiya' => 'ছাগলনাইয়া',
+            'Sadar' => 'সদর',
+            'Sonagazi' => 'সোনাগাজী',
+            'Fulgazi' => 'ফুলগাজী',
+            'Parshuram' => 'পরশুরাম',
+            'Daganbhuiyan' => 'দাগনভূঞা',
+
+            // Brahmanbaria Upazilas
+            'Brahmanbaria Sadar' => 'ব্রাহ্মণবাড়িয়া সদর',
+            'Kasba' => 'কসবা',
+            'Nasirnagar' => 'নাসিরনগর',
+            'Sarail' => 'সরাইল',
+            'Ashuganj' => 'আশুগঞ্জ',
+            'Akhaura' => 'আখাউড়া',
+            'Nabinagar' => 'নবীনগর',
+            'Bancharampur' => 'বাঞ্ছারামপুর',
+            'Bijoynagar' => 'বিজয়নগর',
+
+            // Rangamati Upazilas
+            'Rangamati Sadar' => 'রাঙ্গামাটি সদর',
+            'Kaptai' => 'কাপ্তাই',
+            'Kawkhali' => 'কাউখালী',
+            'Baghaichari' => 'বাঘাইছড়ি',
+            'Barkal' => 'বরকল',
+            'Langadu' => 'লংগদু',
+            'Rajasthali' => 'রাজস্থলী',
+            'Belaichari' => 'বিলাইছড়ি',
+            'Juraichari' => 'জুরাছড়ি',
+            'Naniarchar' => 'নানিয়ারচর',
+
+            // Noakhali Upazilas
+            'Noakhali Sadar' => 'নোয়াখালী',
+            'Companiganj' => 'কোম্পানীগঞ্জ',
+            'Begumganj' => 'বেগমগঞ্জ',
+            'Hatia' => 'হাতিয়া',
+            'Subarnachar' => 'সুবর্ণচর',
+            'Kabirhat' => 'কবিরহাট',
+            'Senbagh' => 'সেনবাগ',
+            'Chatkhil' => 'চাটখিল',
+            'Sonaimuri' => 'সোনাইমুড়ী',
+
+            // Chandpur Upazilas
+            'Haimchar' => 'হাইমচর',
+            'Kachua' => 'কচুয়া',
+            'Shahrasti' => 'শাহরাস্তি',
+            'Chandpur Sadar' => 'চাঁদপুর সদর',
+            'Matlabsouth' => 'মতলব',
+            'Hajiganj' => 'হাজীগঞ্জ',
+            'Matlabnorth' => 'মতলব',
+            'Faridgonj' => 'ফরিদগঞ্জ',
+
+            // Lakshmipur Upazilas
+            'Lakshmipur Sadar' => 'লক্ষ্মীপুর সদর',
+            'Kamalnagar' => 'কমলনগর',
+            'Raipur' => 'রায়পুর',
+            'Ramgati' => 'রামগতি',
+            'Ramganj' => 'রামগঞ্জ',
+
+            // Chattogram City Upazilas
+            'Agrabad' => 'আগ্রাবাদ',
+            'Halishahar' => 'হালিশহর',
+            'Chawkbazar' => 'চকবাজার',
+            'Patenga' => 'পতেঙ্গা',
+            'Kotwali' => 'কতোয়ালি',
+            'Nasirabad' => 'নাসিরাবাদ',
+            'Chandgaon' => 'চান্দগাঁও',
+            'Hathazari' => 'হাটহাজারি',
+            'Muradpur' => 'মুরাদপুর',
+            'Khulshi' => 'খুলশি',
+            'Oxygen' => 'অক্সিজেন',
+            'Cornelhat' => 'কর্ণেলহাট',
+            'Baizid' => 'বায়জিদ',
+            'Bohoddarhat' => 'বদ্দারহাট',
+            'Pahartali' => 'পাহারতলী',
+            'Alankar' => 'অলঙ্গকার',
+            'Bakoliya' => 'বাকলিয়া',
+            'Bandar' => 'বন্দর',
+            'New Market' => 'নিউ মার্কেট',
+            'Karnafuly' => 'কর্ণফুলি',
+            'Patiya' => 'পটিয়া',
+            'Mirsharai' => 'মিরশরাই',
+            'Panchlaish' => 'পান্সলাইশ',
+            'Raozan' => 'রাওজান',
+            'Lalkhan Bazar' => 'লালখান বাজার',
+            'CDA Avenue' => 'সিডিএ এভেনিউ',
+            'Fatikchari' => 'ফটিকছড়ি',
+            'Anderkilla' => 'আন্দরকিল্লা',
+            'Boalkhali' => 'বোয়ালখালী',
+            'Kajir Dewry' => 'কাজির দেওরি',
+            'Jamalkhan' => 'জামাল খান',
+            'Satkania' => 'সাতকানিয়া',
+            'Rangunia' => 'রাঙ্গুনিয়া',
+            'Anwara' => 'আনোয়ারা',
+            'Chandanaish' => 'চন্দনাইশ',
+            'Sholashahar' => 'ষোল শহর',
+            'Lohagara' => 'লোহাগাড়া',
+            'Banskhali' => 'বাঁশখালী',
+            'Sandwip' => 'সন্দীপ',
+
+            // Cox's Bazar Upazilas
+            'Coxsbazar Sadar' => 'কক্সবাজার সদর',
+            'Chakaria' => 'চকরিয়া',
+            'Kutubdia' => 'কুতুবদিয়া',
+            'Ukhiya' => 'উখিয়া',
+            'Moheshkhali' => 'মহেশখালী',
+            'Pekua' => 'পেকুয়া',
+            'Ramu' => 'রামু',
+            'Teknaf' => 'টেকনাফ',
+
+            // Khagrachhari Upazilas
+            'Khagrachhari Sadar' => 'খাগড়াছড়ি সদর',
+            'Dighinala' => 'দিঘীনালা',
+            'Panchari' => 'পানছড়ি',
+            'Laxmichhari' => 'লক্ষীছড়ি',
+            'Mohalchari' => 'মহালছড়ি',
+            'Manikchari' => 'মানিকছড়ি',
+            'Ramgarh' => 'রামগড়',
+            'Matiranga' => 'মাটিরাঙ্গা',
+            'Guimara' => 'গুইমারা',
+
+            // Bandarban Upazilas
+            'Bandarban Sadar' => 'বান্দরবান সদর',
+            'Alikadam' => 'আলীকদম',
+            'Naikhongchhari' => 'নাইক্ষ্যংছড়ি',
+            'Rowangchhari' => 'রোয়াংছড়ি',
+            'Lama' => 'লামা',
+            'Ruma' => 'রুমা',
+            'Thanchi' => 'থানচি',
         ];
     }
+
 }
