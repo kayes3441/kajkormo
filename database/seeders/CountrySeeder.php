@@ -34,6 +34,7 @@ class CountrySeeder extends Seeder
                 'iso3' => 'BGD',
                 'numeric_code' => '050',
                 'phone_code' => '880',
+                'language_code' => 'bn',
                 'currency' => 'BDT',
                 'currency_name' => 'Bangladeshi Taka',
                 'currency_symbol' => '৳',

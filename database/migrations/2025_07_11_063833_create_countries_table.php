@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('iso3', 3)->unique()->index();
             $table->string('numeric_code', 3)->nullable();
             $table->string('phone_code')->nullable();
+            $table->string('language_code',8)->nullable();
             $table->string('currency')->nullable();
             $table->string('currency_name')->nullable();
             $table->string('currency_symbol')->nullable();
