@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('app_language')->default('en');
             $table->text('address')->nullable();
             $table->tinyInteger('status')->default(0);
+            $table->enum('identification_status', ['pending','verified','rejected'])->default('pending');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

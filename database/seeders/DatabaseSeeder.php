@@ -6,7 +6,6 @@ use App\Models\Category;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Notifications\NotificationSender;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,7 +19,7 @@ class DatabaseSeeder extends Seeder
             AdminPermissionSeeder::class,
             CountrySeeder::class,
             LocationSeeder::class,
-            NotificationSender::class
+            NotificationMessagesSeeder::class
         ]);
     }
 }
