@@ -212,6 +212,7 @@ trait PushNotificationTrait
     {
         try {
             $deviceToken =  $userData?->device_token;
+            $userID =  $userData?->id;
             if ($deviceToken) {
                 $lang = $userData?->app_language ?? Helpers::getDefaultLang();
                 $value = $this->pushNotificationMessage($key, $lang);
@@ -222,10 +223,11 @@ trait PushNotificationTrait
                         'image' => '',
                         'type' => 'post verification',
                         'message_key' => $key,
+                        'user_id'  => $userID,
                         'notification_key' => $key,
                         'notification_from' => 'User',
                     ];
-                    $this->sendChattingPushNotificationToDevice($deviceToken, $data);
+                    $this->sendChattingPushNotificationToDevice($deviceToken,$data);
                 }
             }
         } catch (\Exception $exception) {
@@ -242,7 +244,7 @@ trait PushNotificationTrait
      * @return bool|string
      */
 
-    protected function sendChattingPushNotificationToDevice(string $fcmToken, array $data): bool|string
+    protected function sendChattingPushNotificationToDevice(string $fcmToken,array $data): bool|string
     {
         $postData = [
             'message' => [
@@ -252,6 +254,7 @@ trait PushNotificationTrait
                     'body' => (string)$data['description'],
                     'image' => $data['image'],
                     'is_read' => '0',
+                    'user_id' => $data['user_id'],
                     'type' => (string)$data['type'],
                     'message_key' => (string)($data['message_key'] ?? ''),
                     'notification_key' => (string)($data['notification_key'] ?? ''),

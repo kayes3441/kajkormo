@@ -242,6 +242,7 @@ class LocationSeeder extends Seeder
             'Dhaka Division' => 'ঢাকা বিভাগ',
             'Rangpur Division' => 'রংপুর বিভাগ',
             'Mymensingh Division' => 'ময়মনসিংহ বিভাগ',
+            
 
             // Chattogram Districts
             'Cumilla' => 'কুমিল্লা',
