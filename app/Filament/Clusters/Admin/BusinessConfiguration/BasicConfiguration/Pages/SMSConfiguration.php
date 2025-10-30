@@ -33,6 +33,7 @@ class SMSConfiguration extends Page
             'sms_api_key' => Setting::get('sms_api_key'),
             'sms_senderid' => Setting::get('sms_senderid'),
             'sms_template' => Setting::get('sms_template'),
+            'sms_url' => Setting::get('sms_url'),
         ]);
     }
     public function form(Form $form): Form
@@ -50,11 +51,13 @@ class SMSConfiguration extends Page
                                 TextInput::make('sms_senderid')
                                     ->label('Sender ID')
                                     ->default(Setting::get('sms_senderid')),
+                                TextInput::make('sms_url')
+                                    ->label('Sender ID')
+                                    ->default(Setting::get('sms_senderid')),
                                 Textarea::make('sms_template')
                                     ->label('SMS Template')
                                     ->default(Setting::get('sms_template'))
-                                    ->helperText('Use #otp to insert the OTP code into the message.')
-                                    ->columnSpanFull(),
+                                    ->helperText('Use {otp} to insert the OTP code into the message.'),
                             ]
                         )
                     ])->persistCollapsed()
@@ -96,6 +99,7 @@ class SMSConfiguration extends Page
             'sms_api_key',
             'sms_senderid',
             'sms_template',
+            'sms_url',
         ];
 
         foreach ($keys as $key) {

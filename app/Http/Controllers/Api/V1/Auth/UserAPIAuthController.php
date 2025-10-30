@@ -7,14 +7,17 @@ use App\Http\Controllers\Controller;
 use App\Models\OtpVerificationCode;
 use App\Models\User;
 use App\Models\UserLocation;
+use App\Trait\SMSConfigTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use function App\Utils\getConfigurationData;
 
 class UserAPIAuthController extends Controller
 {
+    use SMSConfigTrait;
     public function __construct(
     )
     {
@@ -56,9 +59,13 @@ class UserAPIAuthController extends Controller
             ]);
         }
         $token = $this->OTPGenerate(clientID: $user['id']);
+        $smsStatus = getConfigurationData('sms_config_status');
+        if ($smsStatus)
+        {
+            $this->sendSMS($user['phone'], $token);
+        }
         return response()->json([
-            'temporary_token' => $temporaryToken,
-            'token' => $token,
+            'temporary_token' => $temporaryToken
         ], 201);
     }
 
