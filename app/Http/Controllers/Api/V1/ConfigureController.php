@@ -16,7 +16,17 @@ class ConfigureController extends Controller
         $listOfKeyArray = [
             'web_fav_icon',
             'app_header_logo',
-            'business_name'
+            'maintenance_mode_status',
+            'maintenance_mode_start_at',
+            'maintenance_mode_end_at',
+            'business_name',
+            'business_email',
+            'business_country',
+            'business_phone',
+            'address',
+            'terms_and_conditions',
+            'privacy_policy',
+            'sms_config_status'
         ];
         $data = Setting::whereIn('key', $listOfKeyArray)->get();
         return response()->json([

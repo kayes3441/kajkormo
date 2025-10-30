@@ -7,6 +7,7 @@ use App\Models\Setting;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -39,6 +40,8 @@ class GeneralConfiguration extends Page
     public ?string $address = null;
     public ?string $copyright_text = null;
     public ?string $cookies_text = null;
+    public ?string $privacy_policy = null;
+    public ?string $terms_and_conditions = null;
 
     public function mount(): void
     {
@@ -53,6 +56,8 @@ class GeneralConfiguration extends Page
         $this->address = Setting::get('address');
         $this->copyright_text = Setting::get('copyright_text');
         $this->cookies_text = Setting::get('cookies_text');
+        $this->privacy_policy = Setting::get('privacy_policy');
+        $this->terms_and_conditions = Setting::get('terms_and_conditions');
     }
 
     public function form(Form $form): Form
@@ -121,6 +126,31 @@ class GeneralConfiguration extends Page
                         )
                     ])->persistCollapsed()
                     ->collapsible(),
+                Section::make('Terms & Conditions')
+                    ->description('Manage your website’s Terms & Conditions content.')
+                    ->schema([
+                        RichEditor::make('terms_and_conditions')
+                            ->label('Terms & Conditions')
+                            ->toolbarButtons([
+                                'bold', 'italic', 'underline', 'link', 'orderedList', 'bulletList', 'blockquote'
+                            ])
+                            ->helperText('This will be displayed on your Terms & Conditions page.'),
+                    ])
+                    ->persistCollapsed()
+                    ->collapsible(),
+
+                Section::make('Privacy Policy')
+                    ->description('Manage your website’s Privacy Policy content.')
+                    ->schema([
+                        RichEditor::make('privacy_policy')
+                            ->label('Privacy Policy')
+                            ->toolbarButtons([
+                                'bold', 'italic', 'underline', 'link', 'orderedList', 'bulletList', 'blockquote'
+                            ])
+                            ->helperText('This will be displayed on your Privacy Policy page.'),
+                    ])
+                    ->persistCollapsed()
+                    ->collapsible(),
                 Section::make('Copyright & Cookies')
                     ->description('Configure your copyright and cookies information for the website.')
                     ->schema([
@@ -182,6 +212,8 @@ class GeneralConfiguration extends Page
         Setting::set('address', $this->address);
         Setting::set('copyright_text', $this->copyright_text);
         Setting::set('cookies_text', $this->cookies_text);
+        Setting::set('terms_and_conditions', $this->terms_and_conditions);
+        Setting::set('privacy_policy', $this->privacy_policy);
 
         Notification::make()
             ->title('General Configuration updated successfully!')
