@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\NewServiceAddedTopicEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\PostAddRequest;
 use App\Http\Resources\Api\PostResource;
+use App\Models\Category;
 use App\Models\FavoritePost;
+use App\Models\Location;
 use App\Models\Post;
 use App\Trait\FileManagerTrait;
 use App\Trait\PaginatesWithOffsetTrait;
@@ -62,11 +65,12 @@ class PostController extends Controller
                 $images[] = $path;
             }
         }
+        $categoryId = $request['category_id']
         $post = $this->post->create([
             'user_id'           => $user['id'],
             'title'             => $request['title'],
             'description'       => $request['description'],
-            'category_id'       => $request['category_id'],
+            'category_id'       => $categoryId,
             'subcategory_id'    => $request['subcategory_id'],
             'sub_subcategory_id'=> $request['sub_subcategory_id'],
             'price'             => $request['price'] ?? 0,
@@ -75,9 +79,20 @@ class PostController extends Controller
             'payment_type'      => $request['payment_type'],
             'published_at'      => now(),
         ]);
+
+
         foreach ($request->input('location', []) as $level => $locationId) {
             $post->locations()->attach($locationId, ['level' => $level]);
+
         }
+
+
+        $getLocationId = $request?->location['sub-district'] ?? $request?->location['district'];
+        $categoryName = Category::select('name')->where('id', $categoryId)->first();
+        $LocationName = Location::select('name')->where('id', $getLocationId)->first();
+
+        $topic = $categoryId.'_'.$getLocationId;
+        event(new NewServiceAddedTopicEvent(key: 'new_service_added', topic: $topic, categoryName: $categoryName, locationName: $LocationName));
         return response()->json(['message' => 'Post Created successfully.'],200);
     }
     public function updatePost(PostAddRequest $request, int $id): JsonResponse
