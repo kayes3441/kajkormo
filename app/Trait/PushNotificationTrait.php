@@ -14,13 +14,13 @@ trait PushNotificationTrait
     /**
      * push notification variable message format
      */
-    protected function textVariableDataFormat($value, $key = null, $userName = null,$categoryId = null,$locationId =null)
+    protected function textVariableDataFormat($value, $key = null, $userName = null,$categoryName = null,$locationName =null)
     {
         $data = $value;
         if ($data) {
             $data = $userName ? str_replace("{userName}", $userName, $data) : $data;
-            $data = $categoryId ? str_replace("{categoryId}", $categoryId, $data) : $data;
-            $data = $locationId ? str_replace("{locationId}", $locationId, $data) : $data;
+            $data = $categoryName ? str_replace("{categoryName}", $categoryName, $data) : $data;
+            $data = $locationName ? str_replace("{locationName}", $locationName, $data) : $data;
         }
         return $data;
     }
@@ -301,7 +301,7 @@ trait PushNotificationTrait
         ];
         return $this->sendNotificationToHttp($postData);
     }
-    protected function newServiceAddedTopic(string $key, string|int $categoryId, string|int $locationId): void
+    protected function sendNewServiceAddedTopic(string $key,string|int $topic ,string|int $categoryName, string|int $locationName): void
     {
         try {
             $lang = Helpers::getDefaultLang();
@@ -310,8 +310,8 @@ trait PushNotificationTrait
                 $value = $this->textVariableDataFormat(
                     value: $value,
                     key: $key,
-                    categoryId: "{$categoryId} ",
-                    locationId: "{$locationId} ",
+                    categoryName: "{$categoryName} ",
+                    locationName: "{$locationName} ",
                 );
                 $data = [
                     'title' => $key,
@@ -320,7 +320,6 @@ trait PushNotificationTrait
                     'notification_key' => $key,
                     'notification_from' => 'User',
                 ];
-                $topic = $categoryId . '_' . $locationId;
                 $this->sendPushNotificationToTopic($data, $topic);
             }
         } catch (\Exception $exception) {
@@ -328,7 +327,7 @@ trait PushNotificationTrait
         }
 
     }
-    protected function customTopic(string $key): void
+    protected function sendCustomTopic(string $key): void
     {
         try {
             $lang = Helpers::getDefaultLang();
