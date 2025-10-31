@@ -65,7 +65,7 @@ class PostController extends Controller
                 $images[] = $path;
             }
         }
-        $categoryId = $request['category_id']
+        $categoryId = $request['category_id'];
         $post = $this->post->create([
             'user_id'           => $user['id'],
             'title'             => $request['title'],
@@ -79,8 +79,7 @@ class PostController extends Controller
             'payment_type'      => $request['payment_type'],
             'published_at'      => now(),
         ]);
-
-
+        
         foreach ($request->input('location', []) as $level => $locationId) {
             $post->locations()->attach($locationId, ['level' => $level]);
 
