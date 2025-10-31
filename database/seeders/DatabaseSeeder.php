@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             AdminPermissionSeeder::class,
             CountrySeeder::class,
             LocationSeeder::class,
-            NotificationMessagesSeeder::class
+            NotificationMessagesAndTopicSeeder::class
         ]);
     }
 }

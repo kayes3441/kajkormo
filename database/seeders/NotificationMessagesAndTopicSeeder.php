@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
-class NotificationMessagesSeeder extends Seeder
+class NotificationMessagesAndTopicSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -36,5 +36,25 @@ class NotificationMessagesSeeder extends Seeder
         ];
 
         DB::table('notification_messages')->insert($data);
+
+        $topicData = [
+            [
+                'key'       => 'new_service_added',
+                'topic'       => 'category_id_location_id',
+                'message'   => 'New {category} added in your {location}',
+                'status'    => true,
+                'created_at'=> now(),
+                'updated_at'=> now(),
+            ],
+            [
+            'key'       => 'custom_topic',
+            'topic'       => 'loklagbe_topic',
+            'message'   => 'Send you custom topic',
+            'status'    => true,
+            'created_at'=> now(),
+            'updated_at'=> now(),
+        ]
+        ];
+        DB::table('notification_topics')->insert($topicData);
     }
 }

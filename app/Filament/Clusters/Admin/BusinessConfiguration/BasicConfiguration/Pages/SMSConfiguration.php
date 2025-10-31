@@ -52,8 +52,8 @@ class SMSConfiguration extends Page
                                     ->label('Sender ID')
                                     ->default(Setting::get('sms_senderid')),
                                 TextInput::make('sms_url')
-                                    ->label('Sender ID')
-                                    ->default(Setting::get('sms_senderid')),
+                                    ->label('URL')
+                                    ->default(Setting::get('sms_url')),
                                 Textarea::make('sms_template')
                                     ->label('SMS Template')
                                     ->default(Setting::get('sms_template'))

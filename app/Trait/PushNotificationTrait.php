@@ -3,6 +3,7 @@
 namespace App\Trait;
 
 use App\Models\NotificationMessage;
+use App\Models\NotificationTopic;
 use App\Utils\Helpers;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Http;
@@ -13,11 +14,13 @@ trait PushNotificationTrait
     /**
      * push notification variable message format
      */
-    protected function textVariableDataFormat($value, $key = null, $userName = null)
+    protected function textVariableDataFormat($value, $key = null, $userName = null,$categoryId = null,$locationId =null)
     {
         $data = $value;
         if ($data) {
             $data = $userName ? str_replace("{userName}", $userName, $data) : $data;
+            $data = $categoryId ? str_replace("{categoryId}", $categoryId, $data) : $data;
+            $data = $locationId ? str_replace("{locationId}", $locationId, $data) : $data;
         }
         return $data;
     }
@@ -37,6 +40,29 @@ trait PushNotificationTrait
                 'new_service_added' => 'new_service_added',
             ];
             $data = NotificationMessage::with(['translations' => function ($query) use ($lang) {
+                $query->where('locale', $lang);
+            }])->where(['key' => $notificationKey[$key]])->first() ?? ["status" => 0, "message" => "", "translations" => []];
+            if ($data) {
+                if ($data['status'] == 0) {
+                    return false;
+                }
+                return count($data->translations) > 0 ? $data->translations[0]->value : $data['message'];
+            } else {
+                return false;
+            }
+        } catch (\Exception $exception) {
+
+        }
+    }
+
+    protected function pushNotificationTopic(string $key, string $lang)
+    {
+        try {
+            $notificationKey = [
+                'new_service_added' => 'new_service_added',
+                'custom_topic' => 'custom_topic',
+            ];
+            $data = NotificationTopic::with(['translations' => function ($query) use ($lang) {
                 $query->where('locale', $lang);
             }])->where(['key' => $notificationKey[$key]])->first() ?? ["status" => 0, "message" => "", "translations" => []];
             if ($data) {
@@ -275,5 +301,56 @@ trait PushNotificationTrait
         ];
         return $this->sendNotificationToHttp($postData);
     }
+    protected function newServiceAddedTopic(string $key, string|int $categoryId, string|int $locationId): void
+    {
+        try {
+            $lang = Helpers::getDefaultLang();
+            $value = $this->pushNotificationTopic($key, $lang);
+            if ($value) {
+                $value = $this->textVariableDataFormat(
+                    value: $value,
+                    key: $key,
+                    categoryId: "{$categoryId} ",
+                    locationId: "{$locationId} ",
+                );
+                $data = [
+                    'title' => $key,
+                    'description' => $value,
+                    'image' => '',
+                    'notification_key' => $key,
+                    'notification_from' => 'User',
+                ];
+                $topic = $categoryId . '_' . $locationId;
+                $this->sendPushNotificationToTopic($data, $topic);
+            }
+        } catch (\Exception $exception) {
 
+        }
+
+    }
+    protected function customTopic(string $key): void
+    {
+        try {
+            $lang = Helpers::getDefaultLang();
+            $value = $this->pushNotificationTopic($key, $lang);
+            if ($value) {
+                $value = $this->textVariableDataFormat(
+                    value: $value,
+                    key: $key,
+                );
+                $data = [
+                    'title' => $key,
+                    'description' => $value,
+                    'image' => '',
+                    'notification_key' => $key,
+                    'notification_from' => 'User',
+                ];
+
+                $this->sendPushNotificationToTopic($data);
+            }
+        } catch (\Exception $exception) {
+
+        }
+
+    }
 }
