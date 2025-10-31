@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Admin\NotificationTopicResource;
 
+use App\Events\CustomTopicEvent;
 use App\Models\Language;
 use App\Models\NotificationTopic;
 use Filament\Forms\Components\Hidden;
@@ -80,12 +81,19 @@ class NotificationTopicResource extends Resource
                     ->icon('heroicon-o-paper-airplane')
                     ->color('primary')
                     ->requiresConfirmation()
+                    ->visible(fn ($record) => $record->key !== 'new_service_added')
                     ->action(function ($record) {
-                        $topic = $record->title;
-                        $message = $record->message;
+                        $title = $record->title;
+                        $key = $record->key;
+                        if ($key === 'custom_topic')
+                        {
+                            event(new CustomTopicEvent(key: 'custom_topic'));
+                        }
+
+
                         Notification::make()
                             ->title('Notification Sent')
-                            ->body("Topic '{$topic}' has been sent successfully.")
+                            ->body("Topic '{$title}' has been sent successfully.")
                             ->success()
                             ->send();
                     }),
