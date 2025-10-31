@@ -24,7 +24,7 @@ return new class extends Migration
             $table->timestamp('phone_verified_at')->nullable();
             $table->string('password');
             $table->uuid('temporary_token')->nullable();
-            $table->char('device_token',80)->nullable();
+            $table->text('device_token')->nullable();
             $table->tinyInteger('login_attempts')->default(0);
             $table->tinyInteger('login_max_attempts')->default(10);
             $table->string('app_language')->default('en');

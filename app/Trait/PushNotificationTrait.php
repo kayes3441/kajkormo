@@ -280,7 +280,7 @@ trait PushNotificationTrait
                     'body' => (string)$data['description'],
                     'image' => $data['image'],
                     'is_read' => '0',
-                    'user_id' => $data['user_id'],
+                    'user_id' => (string)($data['user_id'] ?? ''),
                     'type' => (string)$data['type'],
                     'message_key' => (string)($data['message_key'] ?? ''),
                     'notification_key' => (string)($data['notification_key'] ?? ''),

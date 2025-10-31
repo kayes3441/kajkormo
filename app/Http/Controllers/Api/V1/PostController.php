@@ -79,7 +79,7 @@ class PostController extends Controller
             'payment_type'      => $request['payment_type'],
             'published_at'      => now(),
         ]);
-        
+
         foreach ($request->input('location', []) as $level => $locationId) {
             $post->locations()->attach($locationId, ['level' => $level]);
 
@@ -274,7 +274,6 @@ class PostController extends Controller
         }
 
         $post->delete();
-
         return response()->json(['message' => 'Post deleted successfully.'], 200);
     }
 
