@@ -63,10 +63,16 @@ class UserAPIAuthController extends Controller
         if ($smsStatus)
         {
             $this->sendSMS($user['phone'], $token);
+            return response()->json([
+                'temporary_token' => $temporaryToken
+            ], 201);
         }
+        $accessToken = $user->createToken('apiToken')->accessToken;
         return response()->json([
-            'temporary_token' => $temporaryToken
-        ], 201);
+            'access_token' => $accessToken,
+            'token_type'   => 'Bearer',
+        ]);
+
     }
 
     public function verifyOTP(Request $request): JsonResponse
@@ -126,7 +132,8 @@ class UserAPIAuthController extends Controller
         if (! $user || ! Hash::check($request['password'], $user['password'])) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
-        if (is_null($user->phone_verified_at)) {
+        $smsStatus = getConfigurationData('sms_config_status');
+        if (is_null($user->phone_verified_at) && $smsStatus ===false) {
             $temporaryToken = Str::uuid()->toString();
             $user->forceFill([
                 'phone_verified_at' => null,
