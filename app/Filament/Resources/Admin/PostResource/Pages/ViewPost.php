@@ -58,14 +58,35 @@ class ViewPost extends ViewRecord
 
             Section::make('Images')
                 ->schema([
-                    RepeatableEntry::make('images')
+                    RepeatableEntry::make('images_url')
+                        ->label('Images')
                         ->schema([
                             ImageEntry::make('')
                                 ->label('')
                                 ->height(150)
-                                ->width(150) ,
+                                ->width(150)
+                                ->defaultImageUrl(url('/post/placeholder.png')),
                         ])
                         ->columns(5),
+                ]),
+            Section::make('Images')
+                ->schema([
+                    RepeatableEntry::make('images_url')
+                        ->label('Images')
+                        ->schema([
+                            ImageEntry::make('')
+                                ->label('')
+                                ->height(150)
+                                ->width(150)
+                                ->defaultImageUrl(url('/post/placeholder.png')),
+                        ])
+                        ->columns(5),
+                ]),
+            Section::make('User Identity')
+                ->schema([
+                    TextEntry::make('user.userIdentity.nid_number')
+                        ->label('NID Number')
+                        ->formatStateUsing(fn ($record) => $record->user?->userIdentity?->nid_number ?? '—'),
                 ]),
         ]);
     }

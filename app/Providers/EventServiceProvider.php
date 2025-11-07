@@ -3,8 +3,12 @@
 namespace App\Providers;
 
 use App\Events\ChattingEvent;
+use App\Events\CustomTopicEvent;
+use App\Events\NewServiceAddedTopicEvent;
 use App\Events\PostVerification;
 use App\Listeners\ChattingListener;
+use App\Listeners\CustomTopicListener;
+use App\Listeners\NewServiceAddedListener;
 use App\Listeners\SendPostVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -21,6 +25,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         PostVerification::class=>[
             SendPostVerificationNotification::class,
+        ],
+        CustomTopicEvent::class=>[
+            CustomTopicListener::class,
+        ],
+        NewServiceAddedTopicEvent::class=>[
+            NewServiceAddedListener::class
         ]
     ];
 
