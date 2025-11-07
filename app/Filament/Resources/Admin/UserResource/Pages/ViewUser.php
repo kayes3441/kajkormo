@@ -25,7 +25,7 @@ class ViewUser extends ViewRecord
                 Section::make()
                     ->schema([
                         Group::make([
-                            ImageEntry::make('image')
+                            ImageEntry::make('image_url')
                                 ->label('Profile Photo')
                                 ->circular()
                                 ->height(120)
@@ -38,6 +38,7 @@ class ViewUser extends ViewRecord
                                 ->formatStateUsing(fn ($record) => trim($record->first_name . ' ' . $record->last_name))
                                 ->alignCenter(),
                             TextEntry::make('phone')
+                                ->prefix('+880')
                                 ->icon('heroicon-o-phone')
                                 ->label('')
                                 ->alignCenter(),
@@ -105,6 +106,41 @@ class ViewUser extends ViewRecord
                             TextEntry::make('login_attempts')
                                 ->label('Login Attempts'),
                         ]),
+                    ]),
+
+                Section::make('User Identity')
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                TextEntry::make('userIdentity.identity_type')
+                                    ->label('Identity Type')
+                                    ->formatStateUsing(fn ($record) => strtoupper($record?->userIdentity?->identity_type ?? '—'))->inlineLabel(),
+
+                                TextEntry::make('userIdentity.status')
+                                    ->label('Status')
+                                    ->badge()
+                                    ->color(fn ($state) => match ($state) {
+                                        'approved' => 'success',
+                                        'rejected' => 'danger',
+                                        'pending' => 'warning',
+                                        default => 'gray',
+                                    })
+                                    ->formatStateUsing(fn ($state) => ucfirst($state ?? 'Unknown'))->inlineLabel(),
+
+                                TextEntry::make('userIdentity.identity_number')
+                                    ->label('Identity Number')
+                                    ->formatStateUsing(fn ($record) => $record->user?->userIdentity?->nid_number ?? '—'),
+                                ImageEntry::make('userIdentity.front_image_url')
+                                    ->label('')
+                                    ->height(150)
+                                    ->width(150)
+                                    ->defaultImageUrl(url('/post/placeholder.png'))->columnSpanFull()->extraAttributes(['class' => 'mx-auto flex-col']),
+                                ImageEntry::make('userIdentity.back_image_url')
+                                    ->label('')
+                                    ->height(150)
+                                    ->width(150)
+                                    ->defaultImageUrl(url('/post/placeholder.png'))->columnSpanFull()->extraAttributes(['class' => 'mx-auto flex-col']),
+                            ]),
                     ]),
             ]);
     }

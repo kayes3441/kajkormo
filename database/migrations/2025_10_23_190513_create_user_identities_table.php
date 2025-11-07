@@ -14,10 +14,8 @@ return new class extends Migration
         Schema::create('user_identities', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
-            $table->string('nid_number')->nullable();
-            $table->string('passport_number')->nullable();
-            $table->string('driving_license_number')->nullable();
             $table->enum('identity_type',['nid','passport','driving_license'])->nullable();
+            $table->string('identity_number')->nullable();
             $table->json('images')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();

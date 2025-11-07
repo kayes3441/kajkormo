@@ -43,7 +43,7 @@ class Post extends Model
     }
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class,'user_id')->select(['id', 'first_name', 'last_name', 'phone','image']);
+        return $this->belongsTo(User::class,'user_id')->select(['id', 'first_name', 'last_name', 'phone','image','identification_status','status']);
     }
     public function locations(): MorphToMany
     {

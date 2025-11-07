@@ -69,24 +69,39 @@ class ViewPost extends ViewRecord
                         ])
                         ->columns(5),
                 ]),
-            Section::make('Images')
-                ->schema([
-                    RepeatableEntry::make('images_url')
-                        ->label('Images')
-                        ->schema([
-                            ImageEntry::make('')
-                                ->label('')
-                                ->height(150)
-                                ->width(150)
-                                ->defaultImageUrl(url('/post/placeholder.png')),
-                        ])
-                        ->columns(5),
-                ]),
             Section::make('User Identity')
                 ->schema([
-                    TextEntry::make('user.userIdentity.nid_number')
-                        ->label('NID Number')
-                        ->formatStateUsing(fn ($record) => $record->user?->userIdentity?->nid_number ?? '—'),
+                    Grid::make(2)
+                    ->schema([
+                        TextEntry::make('user.userIdentity.identity_type')
+                            ->label('Identity Type')
+                            ->formatStateUsing(fn ($record) => strtoupper($record->user?->userIdentity?->identity_type ?? '—'))->inlineLabel(),
+
+                        TextEntry::make('user.userIdentity.status')
+                            ->label('Status')
+                            ->badge()
+                            ->color(fn ($state) => match ($state) {
+                                'approved' => 'success',
+                                'rejected' => 'danger',
+                                'pending' => 'warning',
+                                default => 'gray',
+                            })
+                            ->formatStateUsing(fn ($state) => ucfirst($state ?? 'Unknown'))->inlineLabel(),
+
+                        TextEntry::make('user.userIdentity.identity_number')
+                            ->label('Identity Number')
+                            ->formatStateUsing(fn ($record) => $record->user?->userIdentity?->nid_number ?? '—'),
+                        ImageEntry::make('user.userIdentity.front_image_url')
+                            ->label('')
+                            ->height(150)
+                            ->width(150)
+                            ->defaultImageUrl(url('/post/placeholder.png'))->columnSpanFull()->extraAttributes(['class' => 'mx-auto flex-col']),
+                        ImageEntry::make('user.userIdentity.back_image_url')
+                            ->label('')
+                            ->height(150)
+                            ->width(150)
+                            ->defaultImageUrl(url('/post/placeholder.png'))->columnSpanFull()->extraAttributes(['class' => 'mx-auto flex-col']),
+                    ]),
                 ]),
         ]);
     }
