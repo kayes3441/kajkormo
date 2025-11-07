@@ -43,7 +43,7 @@ class ChatController extends Controller
             'attachments' => $files,
         ]);
         $receiverData = User::find($request['receiver_id']);
-        event(new ChattingEvent(key: 'message_from_admin', type: 'user', receiverData: $receiverData, messageForm: $user));
+        event(new ChattingEvent(key: 'chatting_notification', type: 'user', receiverData: $receiverData, messageForm: $user));
         return response()->json([
             'success' => true,
             'data'    => $chat->load('sender:id,first_name,last_name', 'receiver:id,first_name,last_name'),
