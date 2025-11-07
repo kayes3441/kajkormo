@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Filament\Resources\Admin\PostResource\Pages;
+use App\Events\PostVerification;
 use App\Filament\Resources\Admin\PostResource\PostResource;
+use App\Listeners\SendPostVerificationNotification;
+use App\Models\User;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Infolists;
@@ -128,6 +131,7 @@ class ViewPost extends ViewRecord
                         'status' => $data['status'],
                         'verify_at' => $data['status'] == 1 ? now() : null,
                     ]);
+
                     if ($data['status'] == 1 && $record->user->identification_status ==='pending') {
                         $record->user->update([
                             'identification_status' => 'verified',
@@ -135,6 +139,11 @@ class ViewPost extends ViewRecord
                         $record->user->userIdentity->update([
                             'status' => 'verified',
                         ]);
+                    }
+                    if($data['status'] == 1)
+                    {
+                        $userData = User::find($record->user['id']);
+                        event(new PostVerification(key:'post_verification', userData: $userData));
                     }
                     Notification::make()
                         ->title('Post status updated successfully!')
