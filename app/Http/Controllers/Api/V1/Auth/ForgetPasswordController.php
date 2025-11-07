@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\PasswordResetToken;
 use App\Models\User;
+use App\Trait\SMSConfigTrait;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Http\JsonResponse;
@@ -12,9 +13,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use function App\Utils\getConfigurationData;
 
 class ForgetPasswordController extends Controller
 {
+    use SMSConfigTrait;
     public function __construct(
         public readonly User $user,
         public readonly PasswordResetToken $passwordResetToken
@@ -55,12 +58,15 @@ class ForgetPasswordController extends Controller
                 'token'=>$token,
             ]);
         }
-
+        $smsStatus = getConfigurationData('sms_config_status');
+        if ($smsStatus)
+        {
+            $this->sendSMS($user['phone'], $token);
+        }
         return response()->json([
             'message' => 'OTP Sent Successfully',
             'resend_time'=> $otpIntervalTime,
             'temporary_token'=> $temporaryToken,
-            'token'=>$token
         ], 200);
     }
 

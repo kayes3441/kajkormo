@@ -208,6 +208,7 @@ trait PushNotificationTrait
     {
         try {
             $deviceToken =  $receiverData?->device_token;
+            $userId = $receiverData?->id;
             if ($deviceToken) {
                 $lang = $receiverData?->app_language ?? Helpers::getDefaultLang();
                 $value = $this->pushNotificationMessage($key, $lang);
@@ -223,8 +224,10 @@ trait PushNotificationTrait
                         'image' => '',
                         'type' => 'chatting',
                         'message_key' => $key,
+                        'user_id' => $userId,
                         'notification_key' => $key,
                         'notification_from' => 'User',
+
                     ];
                     $this->sendChattingPushNotificationToDevice($deviceToken, $data);
                 }
@@ -244,7 +247,7 @@ trait PushNotificationTrait
                 $value = $this->pushNotificationMessage($key, $lang);
                 if ($value) {
                     $data = [
-                        'title' => 'Message',
+                        'title' => 'Post Verified',
                         'description' => $value,
                         'image' => '',
                         'type' => 'post verification',
