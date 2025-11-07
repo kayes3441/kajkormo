@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('payment_type')->nullable();
             $table->json('images')->nullable();
             $table->tinyInteger('status')->default(0);
-            $table->timestamp('published_at')->nullable();
+            $table->timestamp('verify_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->index(['user_id', 'category_id', 'subcategory_id', 'sub_subcategory_id', 'work_type', 'status', 'published_at'], 'posts_filter_index');

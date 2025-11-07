@@ -17,7 +17,7 @@ return new class extends Migration
             $table->enum('identity_type',['nid','passport','driving_license'])->nullable();
             $table->string('identity_number')->nullable();
             $table->json('images')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'verified', 'rejected'])->default('pending');
             $table->timestamps();
         });
     }

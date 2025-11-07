@@ -44,7 +44,7 @@ class ViewPost extends ViewRecord
                                     default => 'gray',
                                 })
                                 ->formatStateUsing(fn ($state) => match ((int) $state) {
-                                    1 => 'Published',
+                                    1 => 'Verified',
                                     2 => 'Rejected',
                                     default => 'Pending',
                                 }),
@@ -81,7 +81,7 @@ class ViewPost extends ViewRecord
                             ->label('Status')
                             ->badge()
                             ->color(fn ($state) => match ($state) {
-                                'approved' => 'success',
+                                'verified' => 'success',
                                 'rejected' => 'danger',
                                 'pending' => 'warning',
                                 default => 'gray',
@@ -117,7 +117,7 @@ class ViewPost extends ViewRecord
                         ->label('Select Status')
                         ->options([
                             0 => 'Pending',
-                            1 => 'Published',
+                            1 => 'Verify',
                             2 => 'Rejected',
                         ])
                         ->default(fn ($record) => $record->status)
@@ -126,8 +126,16 @@ class ViewPost extends ViewRecord
                 ->action(function ($record, array $data) {
                     $record->update([
                         'status' => $data['status'],
-                        'published_at' => $data['status'] == 1 ? now() : null,
+                        'verify_at' => $data['status'] == 1 ? now() : null,
                     ]);
+                    if ($data['status'] == 1 && $record->user->identification_status ==='pending') {
+                        $record->user->update([
+                            'identification_status' => 'verified',
+                        ]);
+                        $record->user->userIdentity->update([
+                            'status' => 'verified',
+                        ]);
+                    }
                     Notification::make()
                         ->title('Post status updated successfully!')
                         ->success()
