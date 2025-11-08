@@ -133,14 +133,15 @@ class UserAPIAuthController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
         $smsStatus = getConfigurationData('sms_config_status');
-        if (is_null($user->phone_verified_at) && $smsStatus ===false) {
+        if (is_null($user->phone_verified_at) && $smsStatus) {
             $temporaryToken = Str::uuid()->toString();
             $user->forceFill([
                 'phone_verified_at' => null,
                 'temporary_token'   => $temporaryToken,
             ])->save();
             $token = $this->OTPGenerate(clientID: $user['id']);
-            return response()->json(['message' => 'Phone not verified', 'temporary_token' => $temporaryToken,'token' => $token,], 403);
+            $this->sendSMS($user['phone'], $token);
+            return response()->json(['message' => 'Phone not verified', 'temporary_token' => $temporaryToken], 403);
         }
         $accessToken = $user->createToken('apiToken')->accessToken;
 

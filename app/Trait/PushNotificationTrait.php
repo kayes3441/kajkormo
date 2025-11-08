@@ -208,7 +208,7 @@ trait PushNotificationTrait
     {
         try {
             $deviceToken =  $receiverData?->device_token;
-            $userId = $receiverData?->id;
+            $userId = $messageForm?->id;
             if ($deviceToken) {
                 $lang = $receiverData?->app_language ?? Helpers::getDefaultLang();
                 $value = $this->pushNotificationMessage($key, $lang);
